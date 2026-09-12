@@ -68,6 +68,15 @@
     </div>
 
     <script>
+        // 与 main.js 的 getAuthHeaders 保持一致：优先 Bearer 令牌，否则依赖 Cookie
+        function getAuthHeaders() {
+            const token = localStorage.getItem('access_token');
+            if (token) {
+                return { 'Authorization': `Bearer ${token}` };
+            }
+            return {};
+        }
+
         document.getElementById('test-deepseek').addEventListener('click', () => {
             testAPI('deepseek-v3-huoshan');
         });
@@ -89,7 +98,8 @@
                 const response = await fetch('/test-api', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        ...getAuthHeaders()
                     },
                     body: JSON.stringify({
                         model: model,
@@ -117,7 +127,7 @@
             resultDiv.className = '';
 
             try {
-                const response = await fetch('/check-config');
+                const response = await fetch('/check-config', { headers: getAuthHeaders() });
                 const data = await response.json();
                 
                 resultDiv.innerHTML = `配置信息:\n\n${JSON.stringify(data, null, 2)}`;

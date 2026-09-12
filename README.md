@@ -101,6 +101,7 @@ python prompt_generator/run_server.py
 | `SUPABASE_KEY` | 是 | Supabase anon public key |
 | `SUPABASE_SERVICE_ROLE_KEY` | 是 | Supabase service_role key（仅后端使用，勿泄露） |
 | `SECRET_KEY` | 否 | 旧版本地令牌签名密钥，不设则每次启动随机生成 |
+| `ALLOWED_ORIGINS` | 否 | CORS 来源白名单（逗号分隔），默认仅同源 |
 | `PORT` | 否 | 服务端口，默认 `8000` |
 | `LOG_LEVEL` | 否 | 日志级别，默认本地 `DEBUG`、Vercel 上 `INFO` |
 

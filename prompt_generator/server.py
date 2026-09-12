@@ -96,14 +96,18 @@ app.mount("/static", StaticFiles(directory=static_path), name="static")
 # 设置模板目录
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 
-# 添加CORS中间件
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS 跨域配置：默认仅同源（不添加 CORS 头）。
+# 如需允许跨域调用 API（例如前后端分开部署），设置环境变量 ALLOWED_ORIGINS，
+# 多个来源用英文逗号分隔，或设置为 * 允许所有来源（不推荐生产使用）
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "").strip()
+if ALLOWED_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[o.strip() for o in ALLOWED_ORIGINS.split(",") if o.strip()],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 # 缓存 metaprompt
 with open(os.path.join(BASE_DIR, "config", "prompts", "metaprompt.txt"), "r", encoding="utf-8") as f:
@@ -2345,8 +2349,8 @@ async def api_test_page():
     return FileResponse(os.path.join(BASE_DIR, "static", "api_test.html"))
 
 @app.post("/test-api")
-async def test_api(request: Request):
-    """测试API连接"""
+async def test_api(request: Request, current_user: UserInfo = Depends(get_current_user)):
+    """测试API连接（消耗服务端 LLM 配额，需登录）"""
     try:
         # 获取请求body
         body = await request.json()
@@ -2386,8 +2390,8 @@ async def test_api(request: Request):
         )
 
 @app.get("/check-config")
-async def check_config():
-    """检查配置"""
+async def check_config(current_user: UserInfo = Depends(get_current_user)):
+    """检查配置（会暴露 API 地址等信息，需登录）"""
     try:
         return {
             "api_key_set": bool(API_KEY),
