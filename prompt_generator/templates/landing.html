@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Optimization -->
+    <title>提示词工坊 Prompt Gongfang - 专业AI提示词工程平台</title>
+    <meta name="description"
+        content="提示词工坊是一个专业的AI提示词管理与优化平台。提供版本控制、AI自动优化、多模型测试等功能，帮助你打造高质量的Prompt。支持DeepSeek, Qwen等主流模型。">
+    <meta name="keywords" content="提示词, Prompt Engineering, AI, LLM, 提示词优化, DeepSeek, Qwen, 提示词管理, Metaprompt">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-dark': '#0f172a',
+                        'brand-medium': '#1e293b',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[var(--bg-main)] text-[var(--text-secondary)] font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav
+        class="fixed top-0 w-full bg-[var(--bg-main)]/80 backdrop-blur-md border-b border-[var(--border-subtle)] z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='/'">
+                    <h1 class="text-xl font-bold brand-font text-[var(--text-primary)] tracking-tight">提示词工坊</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="/auth"
+                        class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-sm font-bold px-5 py-2 rounded-full transition-all shadow-lg shadow-[var(--accent-primary)]/20 hover:scale-105">
+                        立即体验
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+
+            <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-primary)]/10 text-[var(--accent-primary)] text-xs font-bold uppercase tracking-widest mb-8 border border-[var(--accent-primary)]/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent-primary)] animate-pulse"></span>
+                基于 Anthropic Metaprompt 技术
+            </div>
+
+            <h1
+                class="text-4xl md:text-6xl lg:text-7xl font-bold brand-font text-[var(--text-primary)] tracking-tight mb-8 leading-tight">
+                告别手写提示词的<br>
+                <span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-[var(--accent-primary)] to-[#E68A6D]">低效与混乱</span>
+            </h1>
+
+            <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-[var(--text-secondary)] leading-relaxed mb-10">
+                用自然语言描述你的需求，AI 自动生成结构化、可复用的专业级 Prompt。内置最佳实践，一键优化，让每一次与 LLM 的对话都高效精准。
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/auth"
+                    class="w-full sm:w-auto px-8 py-4 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-base font-bold rounded-full transition-all shadow-xl shadow-[var(--accent-primary)]/30 hover:-translate-y-1">
+                    立即体验
+                    <i class="ri-arrow-right-line ml-1"></i>
+                </a>
+                <a href="#how-it-works"
+                    class="w-full sm:w-auto px-8 py-4 bg-white border border-[var(--border-subtle)] hover:border-[var(--text-dim)] text-[var(--text-secondary)] text-base font-medium rounded-full transition-all hover:bg-[var(--bg-main)]">
+                    了解原理
+                </a>
+            </div>
+        </div>
+
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-gradient-to-br from-[var(--accent-primary)]/5 to-transparent rounded-[100%] blur-3xl -z-10 pointer-events-none">
+        </div>
+    </section>
+
+    <!-- Why Better Than Handwritten Section -->
+    <section id="how-it-works" class="py-24 bg-[var(--bg-sidebar)]/50 border-t border-[var(--border-subtle)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold brand-font text-[var(--text-primary)] mb-4">为什么比手写 Prompt 更好？</h2>
+                <p class="text-[var(--text-dim)] max-w-xl mx-auto">手写 Prompt 常见的问题，我们都帮你解决了</p>
+            </div>
+
+            <!-- Comparison Grid -->
+            <div class="grid lg:grid-cols-2 gap-8 mb-16">
+                <!-- Problem Card -->
+                <div class="bg-rose-50 p-8 rounded-2xl border border-rose-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
+                            <i class="ri-close-line text-xl text-rose-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-rose-800">手写 Prompt 的痛点</h3>
+                    </div>
+                    <ul class="space-y-4 text-rose-700">
+                        <li class="flex items-start gap-3">
+                            <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
+                            <span><strong>结构混乱</strong>：想到哪写到哪，缺乏系统性，AI 经常理解偏差</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
+                            <span><strong>遗漏关键要素</strong>：忘记添加输出格式、角色设定或边界条件</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
+                            <span><strong>难以复用</strong>：每次都从头写，无法参数化处理变量</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
+                            <span><strong>优化盲目</strong>：不知道哪里出问题，只能反复试错</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Solution Card -->
+                <div class="bg-emerald-50 p-8 rounded-2xl border border-emerald-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                            <i class="ri-check-line text-xl text-emerald-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-emerald-800">提示词工坊的解决方案</h3>
+                    </div>
+                    <ul class="space-y-4 text-emerald-700">
+                        <li class="flex items-start gap-3">
+                            <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
+                            <span><strong>结构化生成</strong>：自动包含角色、规则、示例、输出格式等完整模块</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
+                            <span><strong>内置最佳实践</strong>：XML 标签分隔、思维链推理、变量占位符</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
+                            <span><strong>参数化模板</strong>：自动识别变量，一套 Prompt 适配多种场景</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
+                            <span><strong>智能优化</strong>：AI 分析弱点，给出具体改进方案并自动执行</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Before/After Example -->
+            <div
+                class="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-subtle)] shadow-lg overflow-hidden">
+                <div class="grid lg:grid-cols-2">
+                    <!-- Before -->
+                    <div class="p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-[var(--border-subtle)]">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2 py-0.5 bg-rose-100 text-rose-600 text-xs font-bold rounded">手写版</span>
+                            <span class="text-sm text-[var(--text-dim)]">典型用户输入</span>
+                        </div>
+                        <div
+                            class="bg-[var(--bg-main)] rounded-lg p-4 font-mono text-sm text-[var(--text-secondary)] leading-relaxed">
+                            <p class="text-[var(--text-dim)] italic">帮我写一个客服机器人的提示词，要礼貌，回答问题要准确。</p>
+                        </div>
+                        <p class="mt-4 text-sm text-[var(--text-dim)]">❌ 缺少角色定义、FAQ来源、错误处理、输出格式...</p>
+                    </div>
+
+                    <!-- After -->
+                    <div class="p-6 lg:p-8 bg-[var(--bg-sidebar)]/30">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-xs font-bold rounded">AI
+                                生成版</span>
+                            <span class="text-sm text-[var(--text-dim)]">自动生成的专业 Prompt</span>
+                        </div>
+                        <div
+                            class="bg-[var(--bg-main)] rounded-lg p-4 font-mono text-xs text-[var(--text-secondary)] leading-relaxed max-h-48 overflow-y-auto">
+                            <p class="text-emerald-600">你是 Acme 公司的 AI 客服代表。请严格根据 FAQ 回答用户问题。</p>
+                            <br>
+                            <p class="text-amber-600">&lt;rules&gt;</p>
+                            <p class="pl-4">1. 只回答 FAQ 中涵盖的问题</p>
+                            <p class="pl-4">2. 如果问题超出范围，回复："抱歉，我需要为您转接人工客服"</p>
+                            <p class="pl-4">3. 保持礼貌专业的语气</p>
+                            <p class="text-amber-600">&lt;/rules&gt;</p>
+                            <br>
+                            <p class="text-amber-600">&lt;faq&gt;</p>
+                            <p class="pl-4 text-blue-500">{{FAQ}}</p>
+                            <p class="text-amber-600">&lt;/faq&gt;</p>
+                            <br>
+                            <p class="text-amber-600">&lt;user_question&gt;</p>
+                            <p class="pl-4 text-blue-500">{{QUESTION}}</p>
+                            <p class="text-amber-600">&lt;/user_question&gt;</p>
+                            <br>
+                            <p class="text-[var(--text-dim)]">请先在 &lt;thinking&gt; 中找到相关 FAQ 内容，然后在 &lt;answer&gt;
+                                中回复用户。</p>
+                        </div>
+                        <p class="mt-4 text-sm text-emerald-600">✅ 完整的角色、规则、变量、推理步骤、输出格式</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Value Props -->
+    <section class="py-24 border-t border-[var(--border-subtle)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold brand-font text-[var(--text-primary)] mb-4">核心能力</h2>
+                <p class="text-[var(--text-dim)] max-w-xl mx-auto">从生成到测试，一站式提示词工程平台</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div
+                    class="bg-[var(--bg-surface)] p-8 rounded-2xl border border-[var(--border-subtle)] shadow-sm hover:shadow-md transition-shadow group">
+                    <div
+                        class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="ri-magic-line text-2xl text-amber-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">智能生成</h3>
+                    <p class="text-[var(--text-secondary)] leading-relaxed mb-4">基于 Anthropic Metaprompt
+                        方法论，输入任务描述即可生成包含角色、规则、示例、推理步骤的专业级 Prompt。</p>
+                    <ul class="text-sm text-[var(--text-dim)] space-y-1">
+                        <li>• 自动结构化分解</li>
+                        <li>• 内置 XML 标签最佳实践</li>
+                        <li>• 智能变量提取</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 2 -->
+                <div
+                    class="bg-[var(--bg-surface)] p-8 rounded-2xl border border-[var(--border-subtle)] shadow-sm hover:shadow-md transition-shadow group">
+                    <div
+                        class="w-12 h-12 bg-rose-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="ri-sparkling-line text-2xl text-[var(--accent-primary)]"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">深度优化</h3>
+                    <p class="text-[var(--text-secondary)] leading-relaxed mb-4">不满意？告诉 AI 你想改进的方向，它会分析现有 Prompt
+                        的弱点，生成优化方案并自动执行两轮迭代。</p>
+                    <ul class="text-sm text-[var(--text-dim)] space-y-1">
+                        <li>• 自动诊断问题点</li>
+                        <li>• 生成改进计划</li>
+                        <li>• 两阶段精修输出</li>
+                    </ul>
+                </div>
+
+                <!-- Feature 3 -->
+                <div
+                    class="bg-[var(--bg-surface)] p-8 rounded-2xl border border-[var(--border-subtle)] shadow-sm hover:shadow-md transition-shadow group">
+                    <div
+                        class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i class="ri-test-tube-line text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-[var(--text-primary)] mb-3">即时测试</h3>
+                    <p class="text-[var(--text-secondary)] leading-relaxed mb-4">直接在平台里填入变量值，一键调用 DeepSeek、Qwen
+                        等模型运行测试，即时查看真实输出效果。</p>
+                    <ul class="text-sm text-[var(--text-dim)] space-y-1">
+                        <li>• 可视化变量填写</li>
+                        <li>• 多模型对比测试</li>
+                        <li>• 结果一键复制</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Version Control Section -->
+    <section class="py-24 bg-[var(--bg-sidebar)]/50 border-t border-[var(--border-subtle)]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold brand-font text-[var(--text-primary)] mb-6">像管理代码一样<br>管理你的 Prompt
+                    </h2>
+                    <p class="text-lg text-[var(--text-secondary)] leading-relaxed mb-8">
+                        每一次生成和优化都会自动保存为新版本。随时回溯历史、对比差异、恢复旧版。再也不用担心"那个效果最好的版本去哪了"。
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center">
+                                <i class="ri-history-line text-[var(--accent-primary)]"></i>
+                            </div>
+                            <span class="text-[var(--text-secondary)]">完整的版本历史记录</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center">
+                                <i class="ri-git-branch-line text-[var(--accent-primary)]"></i>
+                            </div>
+                            <span class="text-[var(--text-secondary)]">一键切换任意历史版本</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 bg-[var(--accent-primary)]/10 rounded-full flex items-center justify-center">
+                                <i class="ri-folder-line text-[var(--accent-primary)]"></i>
+                            </div>
+                            <span class="text-[var(--text-secondary)]">按项目组织，多 Prompt 井井有条</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-[var(--bg-surface)] rounded-2xl border border-[var(--border-subtle)] p-6 shadow-lg">
+                    <div class="flex items-center gap-2 mb-4 text-xs text-[var(--text-dim)]">
+                        <i class="ri-history-line"></i>
+                        <span>版本历史</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-lg bg-[var(--accent-primary)]/5 border border-[var(--accent-primary)]/20">
+                            <span
+                                class="px-2 py-0.5 bg-[var(--accent-primary)] text-white text-xs font-bold rounded">v3</span>
+                            <span class="text-sm text-[var(--text-primary)] flex-1">优化后 - 添加了思维链推理</span>
+                            <span class="text-xs text-[var(--text-dim)]">当前</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--bg-main)] transition-colors cursor-pointer">
+                            <span
+                                class="px-2 py-0.5 bg-[var(--text-dim)] text-white text-xs font-bold rounded">v2</span>
+                            <span class="text-sm text-[var(--text-secondary)] flex-1">添加了输出格式约束</span>
+                            <span class="text-xs text-[var(--text-dim)]">2小时前</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-3 p-3 rounded-lg hover:bg-[var(--bg-main)] transition-colors cursor-pointer">
+                            <span
+                                class="px-2 py-0.5 bg-[var(--text-dim)] text-white text-xs font-bold rounded">v1</span>
+                            <span class="text-sm text-[var(--text-secondary)] flex-1">初始生成版本</span>
+                            <span class="text-xs text-[var(--text-dim)]">3小时前</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 border-t border-[var(--border-subtle)]">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl md:text-4xl font-bold brand-font text-[var(--text-primary)] mb-6">
+                准备好告别低效的手写提示词了吗？
+            </h2>
+            <p class="text-lg text-[var(--text-secondary)] mb-10">
+                免费注册，立即开始用 AI 打造专业级 Prompt
+            </p>
+            <a href="/auth"
+                class="inline-flex items-center gap-2 px-10 py-5 bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-lg font-bold rounded-full transition-all shadow-xl shadow-[var(--accent-primary)]/30 hover:-translate-y-1">
+                <i class="ri-rocket-line"></i>
+                立即体验
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[var(--bg-main)] py-12 border-t border-[var(--border-subtle)]">
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h4 class="font-bold brand-font text-[var(--text-primary)] mb-2">提示词工坊</h4>
+                <p class="text-sm text-[var(--text-dim)]">© 2024 Prompt Gongfang. All rights reserved.</p>
+            </div>
+            <div class="flex gap-6">
+                <a href="#" class="text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"><i
+                        class="ri-github-fill text-xl"></i></a>
+                <a href="#" class="text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"><i
+                        class="ri-twitter-x-fill text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

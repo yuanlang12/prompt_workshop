@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示词工坊 - 登录</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script>
+        // 清除所有认证相关的本地存储
+        function clearAllAuthStorage() {
+            console.log("清除所有认证存储...");
+
+            // 要清除的存储键列表
+            const keysToRemove = [
+                'supabase.auth.token',
+                'sb-access-token',
+                'sb-refresh-token',
+                'sb:token',
+                'supabase-auth-token',
+                'access_token',
+                'auth.token',
+                'auth.refresh-token'
+            ];
+
+            // 清除localStorage
+            keysToRemove.forEach(key => {
+                try {
+                    localStorage.removeItem(key);
+                    console.log(`已清除localStorage: ${key}`);
+                } catch (e) {
+                    console.warn(`清除localStorage ${key} 失败:`, e);
+                }
+            });
+
+            // 清除sessionStorage
+            keysToRemove.forEach(key => {
+                try {
+                    sessionStorage.removeItem(key);
+                    console.log(`已清除sessionStorage: ${key}`);
+                } catch (e) {
+                    console.warn(`清除sessionStorage ${key} 失败:`, e);
+                }
+            });
+
+            // 清除所有cookie
+            document.cookie.split(";").forEach(function (c) {
+                document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+            });
+
+            console.log("已清除所有认证存储");
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 从HTML数据属性中获取值
+            const shouldClearStorage = document.body.getAttribute('data-clear-storage') === 'true';
+            const logoutSuccess = document.body.getAttribute('data-logout-success') === 'true';
+
+            // 尝试清除所有认证存储
+            if (shouldClearStorage) {
+                clearAllAuthStorage();
+                console.log("已执行退出登录后的存储清理");
+            }
+
+            // 如果存在退出成功消息，显示5秒后自动隐藏
+            if (logoutSuccess) {
+                const messageElement = document.getElementById('success-message');
+                if (messageElement) {
+                    setTimeout(function () {
+                        messageElement.style.opacity = '0';
+                        setTimeout(function () {
+                            messageElement.style.display = 'none';
+                        }, 500);
+                    }, 5000);
+                }
+            }
+        });
+    </script>
+    <style>
+        :root {
+            /* Fallback variables if styles.css fails to load */
+            --bg-main: #F9F8F6;
+            --bg-surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-dim: #8E8E8E;
+            --accent-primary: #D97757;
+            --accent-hover: #C66547;
+            --border-subtle: #EBE9E1;
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --brand-font: "Young Serif", serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-secondary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background-color: var(--bg-surface);
+            border-radius: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            padding: 48px;
+            width: 440px;
+            max-width: 100%;
+        }
+
+        .login-card h1 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+            font-family: var(--brand-font);
+            font-size: 2.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .login-card p {
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.01em;
+        }
+
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: #fafafa;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-primary);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(217, 119, 87, 0.08);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        .login-button {
+            display: block;
+            width: 100%;
+            background-color: var(--accent-primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            text-decoration: none;
+            margin-top: 32px;
+            box-shadow: 0 2px 4px rgba(217, 119, 87, 0.1);
+        }
+
+        .login-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(217, 119, 87, 0.2);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .register-link a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        #forgot-password-link {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        #forgot-password-link:hover {
+            color: var(--accent-primary);
+        }
+    </style>
+</head>
+
+<body data-clear-storage="{{ 'true' if clear_storage else 'false' }}"
+    data-logout-success="{{ 'true' if logout_success else 'false' }}">
+    <div class="login-container">
+        <div class="login-card">
+            <h1>提示词工坊</h1>
+            <p>高效创建、管理和优化AI提示词</p>
+
+            {% if message %}
+            <div class="alert alert-success"
+                style="color: green; background-color: #e8f5e9; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                {{ message }}
+            </div>
+            {% endif %}
+
+            {% if error %}
+            <div class="alert alert-danger"
+                style="color: red; background-color: #ffebee; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">电子邮箱</label>
+                    <input type="email" id="email" name="email" value="{{ request.query_params.get('email', '') }}"
+                        required>
+                    <div id="email-error" class="error-message"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required>
+                    <div id="password-error" class="error-message"></div>
+                </div>
+
+                <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+                    <a href="#" id="forgot-password-link"
+                        style="color: var(--primary-color); font-size: 14px; text-decoration: none;">忘记密码？</a>
+                </div>
+
+                <button type="submit" class="login-button">登录</button>
+            </form>
+
+            <div class="register-link">
+                没有账户？<a href="/auth/register-page">立即注册</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // 忘记密码处理
+        document.getElementById('forgot-password-link').addEventListener('click', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+
+            if (!email) {
+                alert('请先输入您的邮箱地址');
+                document.getElementById('email').focus();
+                return;
+            }
+
+            // 确认发送重置邮件
+            if (!confirm(`将向 ${email} 发送密码重置邮件，确认继续？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `email=${encodeURIComponent(email)}`
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert('密码重置邮件已发送！请查收邮箱（包括垃圾邮件箱）并点击邮件中的链接重置密码。');
+                } else {
+                    alert('发送失败：' + (result.detail || '未知错误'));
+                }
+            } catch (error) {
+                console.error('发送密码重置邮件失败:', error);
+                alert('发送密码重置邮件时出错，请稍后再试');
+            }
+        });
+
+        // 表单验证和提交处理
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // 重置错误消息
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            // 获取表单数据
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // 准备提交数据
+            const loginData = {
+                email,
+                password
+            };
+
+            try {
+                // 发送登录请求
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                // 解析响应
+                const result = await response.json();
+
+                if (!response.ok) {
+                    // 处理登录失败
+                    if (result.detail) {
+                        // 显示错误信息
+                        const error = document.getElementById('email-error');
+                        error.textContent = result.detail;
+                        error.style.display = 'block';
+
+                        // 如果是未注册错误，显示注册链接
+                        if (result.detail.includes("未注册")) {
+                            const registerLink = document.createElement('div');
+                            registerLink.innerHTML = `<a href="/auth/register-page" style="color: var(--primary-color); text-decoration: none;">立即注册</a>`;
+                            error.appendChild(registerLink);
+                        }
+                    }
+                    return;
+                }
+
+                // 登录成功，重定向到首页
+                window.location.href = '/';
+
+            } catch (error) {
+                console.error('登录失败:', error);
+                // 显示一般错误信息
+                const emailError = document.getElementById('email-error');
+                emailError.textContent = '登录过程中出错，请稍后再试';
+                emailError.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

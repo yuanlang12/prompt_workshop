@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示词工坊 - 注册</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        :root {
+            /* Fallback variables if styles.css fails to load */
+            --bg-main: #F9F8F6;
+            --bg-surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --text-dim: #8E8E8E;
+            --accent-primary: #D97757;
+            --accent-hover: #C66547;
+            --border-subtle: #EBE9E1;
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.04), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+            --brand-font: "Young Serif", serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-secondary);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+        }
+
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .register-card {
+            background-color: var(--bg-surface);
+            border-radius: 24px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+            padding: 48px;
+            width: 440px;
+            max-width: 100%;
+        }
+
+        .register-card h1 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            text-align: center;
+            font-family: var(--brand-font);
+            font-size: 2.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .register-card p {
+            color: var(--text-dim);
+            margin-bottom: 40px;
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .form-group,
+        .mb-3 {
+            margin-bottom: 24px;
+        }
+
+        .form-group label,
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            letter-spacing: 0.01em;
+        }
+
+        .form-group input,
+        .form-control {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border-subtle);
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: #fafafa;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-control:focus {
+            border-color: var(--accent-primary);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(217, 119, 87, 0.08);
+        }
+
+        .register-button {
+            display: block;
+            width: 100%;
+            background-color: var(--accent-primary);
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+            text-decoration: none;
+            margin-top: 32px;
+            box-shadow: 0 2px 4px rgba(217, 119, 87, 0.1);
+        }
+
+        .register-button:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(217, 119, 87, 0.2);
+        }
+
+        .register-button:active {
+            transform: translateY(0);
+        }
+
+        .register-button:disabled {
+            background-color: var(--text-dim);
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            margin-top: 8px;
+            font-size: 0.8rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .form-text {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <h1>注册账户</h1>
+            <p>创建您的提示词工坊账户</p>
+
+            {% if error %}
+            <div class="alert alert-danger" role="alert"
+                style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; padding: 12px 16px; margin-bottom: 20px;">
+                <strong>注册失败:</strong> {{ error }}
+                {% if show_login_link %}
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f5c6cb;">
+                    <p>看起来您已注册过账户，您可以：</p>
+                    <a href="/auth/login-page?email={{ email | urlencode }}" class="btn btn-primary"
+                        style="display: inline-block; background-color: var(--primary-color); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; margin-top: 5px;">
+                        <i class="ri-login-box-line"></i> 立即登录
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <form id="register-form">
+                <div class="mb-3">
+                    <label for="username" class="form-label">用户名</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                    <div id="username-error" class="error-message"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">电子邮箱</label>
+                    <input type="email" class="form-control" id="email" name="email" required autocomplete="email">
+                    <div id="email-error" class="error-message"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">密码</label>
+                    <input type="password" class="form-control" id="password" name="password" required
+                        autocomplete="new-password">
+                    <small class="form-text text-muted">密码必须同时包含大写字母、小写字母和数字</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">确认密码</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required
+                        autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="register-button">注册</button>
+            </form>
+
+            <div class="login-link">
+                已有账户？<a href="/auth/login-page">立即登录</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 表单验证和提交处理
+        document.getElementById('register-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // 重置错误消息
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.style.display = 'none';
+                el.textContent = '';
+            });
+
+            // 获取表单数据
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // 验证密码复杂度
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+
+            if (!hasLowerCase || !hasUpperCase || !hasNumber) {
+                alert("密码必须同时包含大写字母、小写字母和数字");
+                return;
+            }
+
+            // 验证密码匹配
+            if (password !== confirmPassword) {
+                alert("两次输入的密码不一致");
+                return;
+            }
+
+            // 禁用提交按钮，防止重复提交
+            const submitButton = document.querySelector('.register-button');
+            const originalButtonText = submitButton.textContent;
+            submitButton.disabled = true;
+            submitButton.textContent = '注册中...';
+
+            // 验证通过，使用fetch提交表单
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('password', password);
+
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json'  // 请求JSON响应
+                    },
+                    body: formData
+                });
+
+                // 如果是成功的重定向，直接让浏览器跟随
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+
+                // 处理错误情况(状态码非2xx)
+                if (!response.ok) {
+                    // 尝试解析为HTML响应(这是我们的模板渲染)
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/html')) {
+                        // 获取响应HTML并替换当前页面内容
+                        const html = await response.text();
+                        document.open();
+                        document.write(html);
+                        document.close();
+                        return;
+                    }
+
+                    // 如果是JSON错误响应
+                    try {
+                        const errorData = await response.json();
+                        const errorMessage = errorData.detail || "";
+
+                        // 创建错误提示元素
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'alert alert-danger';
+                        errorDiv.style.cssText = 'color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px; padding: 12px 16px; margin-bottom: 20px;';
+
+                        // 检查是否是"已注册"类型的错误
+                        const isAlreadyRegistered =
+                            errorMessage.includes("已被注册") ||
+                            errorMessage.includes("already registered") ||
+                            errorData.error_code === "user_already_exists" ||
+                            errorMessage.toLowerCase().includes("exist");
+
+                        if (isAlreadyRegistered) {
+                            // 创建已注册用户专用的错误提示，包含登录链接
+                            errorDiv.innerHTML = `
+                                <strong>注册失败:</strong> 该邮箱已被注册
+                                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #f5c6cb;">
+                                    <p>您可以直接登录已有账户：</p>
+                                    <a href="/auth/login-page?email=${encodeURIComponent(email)}" 
+                                       style="display: inline-block; background-color: var(--primary-color); color: white; padding: 8px 16px; border-radius: 4px; text-decoration: none; margin-top: 5px;">
+                                       <i class="ri-login-box-line"></i> 立即登录
+                                    </a>
+                                </div>
+                            `;
+                        } else {
+                            // 其他类型错误的通用提示
+                            errorDiv.innerHTML = `<strong>注册失败:</strong> ${errorMessage || "请检查您的注册信息"}`;
+                        }
+
+                        // 先移除可能存在的错误提示
+                        const existingError = document.querySelector('.alert.alert-danger');
+                        if (existingError) {
+                            existingError.remove();
+                        }
+
+                        // 添加到表单之前
+                        const form = document.getElementById('register-form');
+                        form.parentNode.insertBefore(errorDiv, form);
+
+                        // 滚动到顶部以显示错误信息
+                        window.scrollTo(0, 0);
+
+                        // 如果是已注册错误，自动将焦点设置到登录按钮
+                        if (isAlreadyRegistered) {
+                            const loginButton = errorDiv.querySelector('a');
+                            if (loginButton) {
+                                loginButton.focus();
+                            }
+                        }
+                    } catch (parseError) {
+                        console.error('解析错误响应失败:', parseError);
+                        alert("注册失败，请检查您的注册信息或稍后重试");
+                    }
+                    return;
+                }
+
+                // 其他成功情况，默认重定向到首页
+                window.location.href = '/';
+
+            } catch (error) {
+                console.error('表单提交错误:', error);
+                alert("提交表单时发生错误，请稍后重试");
+            } finally {
+                // 恢复提交按钮状态
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
+        });
+    </script>
+</body>
+
+</html>

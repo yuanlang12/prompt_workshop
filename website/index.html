@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泼墨 - 专业AI提示词生成与管理工具</title>
+    <meta name="description" content="泼墨（提示词工坊）是一款专业的AI提示词生成与管理工具，帮助您提高AI输出质量，让AI更懂你的需求。">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Remix Icon CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- React Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="header">
+        <div class="container">
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <img src="assets/logo.svg" alt="泼墨" class="logo-img">
+                    <span class="logo-text">泼墨</span>
+                </a>
+                <nav class="nav">
+                    <ul class="nav-links">
+                        <li><a href="#features">功能</a></li>
+                        <li><a href="#use-cases">使用场景</a></li>
+                        <li><a href="#pricing">价格</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </nav>
+                <a href="https://promptworkshop.vercel.app/" class="btn btn-primary btn-cta">立即使用</a>
+                <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                    <i class="ri-menu-line"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 首屏区域 - Anthropic风格 -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <p>引入全新体验</p>
+                <h1 class="hero-title">
+                    一键生成 <span>Agent</span> 提示词<br>
+                    快速测试，优化提升
+                </h1>
+                <p class="hero-subtitle">体验泼墨的先进提示词生成能力，增强AI推理，人性化回应，以及卓越的安全特性，为您的关键业务工作流程提供支持。</p>
+                <div class="hero-cta">
+                    <a href="https://promptworkshop.vercel.app/" class="btn btn-primary btn-lg">立即使用</a>
+                    <a href="#features" class="btn btn-secondary btn-lg">了解更多</a>
+                </div>
+                <p class="hero-users">已有 10,000+ 用户正在使用</p>
+            </div>
+        </div>
+        <div class="hero-bg"></div>
+    </section>
+
+    <!-- 功能特性 -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">核心功能</h2>
+                <p class="section-subtitle">打造完美提示词的强大工具</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-magic-line"></i>
+                    </div>
+                    <h3>智能生成</h3>
+                    <p>从简单描述快速生成专业提示词，节省90%构思时间</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-braces-line"></i>
+                    </div>
+                    <h3>变量系统</h3>
+                    <p>自定义变量实现一套提示词适配多种场景，提高复用率</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-file-history-line"></i>
+                    </div>
+                    <h3>版本管理</h3>
+                    <p>追踪每次修改，对比不同版本效果，找到最佳方案</p>
+                </div>
+            </div>
+            <div class="features-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-robot-line"></i>
+                    </div>
+                    <h3>多模型适配</h3>
+                    <p>适配主流AI模型，一次创建到处使用，效果一致</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-shield-check-line"></i>
+                    </div>
+                    <h3>安全保障</h3>
+                    <p>数据加密存储，隐私保护，确保您的提示词安全</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-stack-line"></i>
+                    </div>
+                    <h3>批量处理</h3>
+                    <p>同时处理多个提示词，提高工作效率和一致性</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 深度功能介绍 -->
+    <section class="features-detail">
+        <div class="container">
+            <!-- 功能1 -->
+            <div class="feature-detail">
+                <div class="feature-detail-content">
+                    <h3>一键生成专业提示词</h3>
+                    <p>不再为编写复杂提示词而烦恼。只需描述你的需求，AI助手会立即生成结构化的专业提示词。支持中英文输入，自动生成针对特定任务优化的提示词模板。</p>
+                    <ul class="feature-list">
+                        <li><i class="ri-check-line"></i> 智能理解您的任务需求</li>
+                        <li><i class="ri-check-line"></i> 自动添加必要的限定条件</li>
+                        <li><i class="ri-check-line"></i> 根据任务类型优化提示词结构</li>
+                    </ul>
+                </div>
+                <div class="feature-detail-image">
+                    <img src="assets/feature-generate.svg" alt="提示词生成演示">
+                </div>
+            </div>
+
+            <!-- 功能2 -->
+            <div class="feature-detail reverse">
+                <div class="feature-detail-image">
+                    <img src="assets/feature-variables.svg" alt="变量系统演示">
+                </div>
+                <div class="feature-detail-content">
+                    <h3>强大的变量系统</h3>
+                    <p>通过定义变量，一套提示词模板可以适应多种场景。只需更换变量值，轻松应对不同需求，大幅提高工作效率。</p>
+                    <ul class="feature-list">
+                        <li><i class="ri-check-line"></i> 支持多种类型变量</li>
+                        <li><i class="ri-check-line"></i> 预设变量值快速切换</li>
+                        <li><i class="ri-check-line"></i> 智能变量提取和建议</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 功能3 -->
+            <div class="feature-detail">
+                <div class="feature-detail-content">
+                    <h3>完整的版本管理</h3>
+                    <p>记录每一次提示词调整，对比不同版本效果，找出最佳表达方式。支持版本回溯、比较和合并，让提示词迭代优化变得简单。</p>
+                    <ul class="feature-list">
+                        <li><i class="ri-check-line"></i> 自动保存版本历史</li>
+                        <li><i class="ri-check-line"></i> 版本对比和差异高亮</li>
+                        <li><i class="ri-check-line"></i> 一键恢复历史版本</li>
+                    </ul>
+                </div>
+                <div class="feature-detail-image">
+                    <img src="assets/feature-versions.svg" alt="版本管理演示">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 使用场景 -->
+    <section id="use-cases" class="use-cases">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">适用场景</h2>
+                <p class="section-subtitle">为各行各业提供AI提示词解决方案</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-article-line"></i>
+                    </div>
+                    <h3>内容创作</h3>
+                    <p>为博客、社交媒体、营销文案生成精准提示词，提高内容质量和创作效率</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-code-box-line"></i>
+                    </div>
+                    <h3>软件开发</h3>
+                    <p>技术文档、代码生成和调试的提示词模板，加速开发流程</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-book-open-line"></i>
+                    </div>
+                    <h3>教育培训</h3>
+                    <p>课程开发、学习资料和考试题目生成，提升教学质量</p>
+                </div>
+            </div>
+            <div class="features-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-palette-line"></i>
+                    </div>
+                    <h3>设计创意</h3>
+                    <p>图形设计、UI/UX设计指导提示词，激发设计灵感</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-customer-service-line"></i>
+                    </div>
+                    <h3>客户服务</h3>
+                    <p>客服对话、FAQ生成、问题解决方案，提升客户满意度</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="ri-line-chart-line"></i>
+                    </div>
+                    <h3>数据分析</h3>
+                    <p>数据解释、趋势分析和报告生成，更好理解复杂数据</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 价格方案 -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">灵活定价</h2>
+                <p class="section-subtitle">选择最适合您需求的方案</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="pricing-header">
+                        <h3>免费版</h3>
+                        <div class="pricing-price">
+                            <span class="price">¥0</span>
+                            <span class="period">/月</span>
+                        </div>
+                        <p>适合个人体验使用</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="ri-check-line"></i> 10次/月提示词生成</li>
+                            <li><i class="ri-check-line"></i> 3个项目</li>
+                            <li><i class="ri-check-line"></i> 基础变量功能</li>
+                            <li><i class="ri-close-line"></i> 版本历史（最多2个）</li>
+                            <li><i class="ri-close-line"></i> 高级模型支持</li>
+                            <li><i class="ri-close-line"></i> API访问</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-cta">
+                        <a href="https://promptworkshop.vercel.app/?plan=free" class="btn btn-outline">立即使用</a>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="pricing-header">
+                        <h3>专业版</h3>
+                        <div class="pricing-price">
+                            <span class="price">¥39</span>
+                            <span class="period">/月</span>
+                        </div>
+                        <p>适合个人专业使用</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="ri-check-line"></i> 无限提示词生成</li>
+                            <li><i class="ri-check-line"></i> 无限项目</li>
+                            <li><i class="ri-check-line"></i> 高级变量系统</li>
+                            <li><i class="ri-check-line"></i> 完整版本历史</li>
+                            <li><i class="ri-check-line"></i> 全部模型支持</li>
+                            <li><i class="ri-close-line"></i> API访问</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-cta">
+                        <a href="https://promptworkshop.vercel.app/?plan=pro" class="btn btn-primary">立即使用</a>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <div class="pricing-header">
+                        <h3>团队版</h3>
+                        <div class="pricing-price">
+                            <span class="price">¥149</span>
+                            <span class="period">/月</span>
+                        </div>
+                        <p>适合团队协作使用</p>
+                    </div>
+                    <div class="pricing-features">
+                        <ul>
+                            <li><i class="ri-check-line"></i> 专业版全部功能</li>
+                            <li><i class="ri-check-line"></i> 5人团队账户</li>
+                            <li><i class="ri-check-line"></i> 提示词共享与协作</li>
+                            <li><i class="ri-check-line"></i> 团队模板库</li>
+                            <li><i class="ri-check-line"></i> 优先技术支持</li>
+                            <li><i class="ri-check-line"></i> API访问</li>
+                        </ul>
+                    </div>
+                    <div class="pricing-cta">
+                        <a href="https://promptworkshop.vercel.app/?plan=team" class="btn btn-outline">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常见问题 -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">常见问题</h2>
+                <p class="section-subtitle">您可能想了解的问题</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>泼墨是如何工作的？</h3>
+                    <p>泼墨（提示词工坊）通过分析您的任务需求，调用先进的AI技术自动生成优化的提示词结构。系统会考虑任务类型、目标受众和特定要求，生成包含必要元素的专业提示词，大大提高AI模型输出质量。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>我可以在不同的AI模型中使用同一个提示词吗？</h3>
+                    <p>是的，泼墨生成的提示词兼容多种主流AI模型，如GPT系列、Claude、Gemini等。您可以在系统中直接选择目标模型进行测试，确保提示词在不同模型上都能获得良好效果。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>如何使用变量系统？</h3>
+                    <p>变量系统允许您在提示词中定义可替换的部分。只需使用特定格式（如{{变量名}}）标记变量，系统会自动识别并创建变量控件。之后，您可以轻松更改变量值而不需要修改整个提示词，大大提高灵活性。</p>
+                </div>
+            </div>
+            <div class="features-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <h3>免费版和付费版有什么区别？</h3>
+                    <p>免费版提供基础功能，包括有限次数的提示词生成、少量项目和简单的变量功能。付费版解锁无限生成次数、无限项目、高级变量系统、完整版本历史和全部模型支持等功能。团队版还增加了协作功能和API访问权限。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>提示词可以导出和共享吗？</h3>
+                    <p>是的，泼墨支持以多种格式导出您的提示词，包括文本、JSON和专用格式。您可以轻松地将提示词分享给团队成员或跨平台使用。团队版用户还可以使用内置的协作功能直接在平台内共享和协作编辑。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>我可以批量导入现有提示词吗？</h3>
+                    <p>可以，泼墨支持批量导入功能，允许您将现有的提示词集合快速导入系统。支持多种格式的导入，系统会自动分析并识别其中的变量和结构，帮助您快速构建个人或团队的提示词库。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 注册引导 -->
+    <section class="cta">
+        <div class="container">
+            <h2>准备好提升你的AI提示词质量？</h2>
+            <p>立即开始使用，提高AI输出效率</p>
+            <div class="cta-buttons">
+                <a href="https://promptworkshop.vercel.app/" class="btn btn-primary btn-lg">立即使用</a>
+                <a href="#features" class="btn btn-secondary btn-lg">了解更多</a>
+            </div>
+        </div>
+        <div class="cta-bg"></div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 泼墨（提示词工坊）- 保留所有权利</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html> 

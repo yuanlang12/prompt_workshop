@@ -1,0 +1,13 @@
+<svg width="800" height="450" viewBox="0 0 800 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#1F2937"/>
+  <rect x="200" y="125" width="400" height="200" rx="20" fill="url(#paint0_linear)"/>
+  <circle cx="400" cy="225" r="50" fill="#FFFFFF" fill-opacity="0.9"/>
+  <path d="M385 200L425 225L385 250V200Z" fill="#1F2937"/>
+  <text x="400" y="315" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" fill="white">点击播放演示视频</text>
+  <defs>
+    <linearGradient id="paint0_linear" x1="200" y1="125" x2="600" y2="325" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+</svg> 

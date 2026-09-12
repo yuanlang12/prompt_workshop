@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API测试页面</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+        .success {
+            color: #388e3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API连接测试</h1>
+        <div>
+            <button id="test-deepseek">测试 DeepSeek-v3</button>
+            <button id="test-qwen">测试 Qwen-Plus</button>
+            <button id="check-config">检查配置</button>
+        </div>
+        <div id="result">测试结果将显示在这里...</div>
+    </div>
+
+    <script>
+        document.getElementById('test-deepseek').addEventListener('click', () => {
+            testAPI('deepseek-v3-huoshan');
+        });
+
+        document.getElementById('test-qwen').addEventListener('click', () => {
+            testAPI('qwen-plus');
+        });
+
+        document.getElementById('check-config').addEventListener('click', () => {
+            checkConfig();
+        });
+
+        async function testAPI(model) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `正在测试 ${model} 模型...`;
+            resultDiv.className = '';
+
+            try {
+                const response = await fetch('/test-api', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: model,
+                        prompt: "你好，这是一个API测试。请简短回复以确认连接正常。"
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<span class="success">测试成功!</span>\n\n${JSON.stringify(data, null, 2)}`;
+                } else {
+                    resultDiv.innerHTML = `<span class="error">测试失败!</span>\n\n${JSON.stringify(data, null, 2)}`;
+                    resultDiv.className = 'error';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">请求错误:</span> ${error.message}`;
+                resultDiv.className = 'error';
+            }
+        }
+
+        async function checkConfig() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `正在检查配置...`;
+            resultDiv.className = '';
+
+            try {
+                const response = await fetch('/check-config');
+                const data = await response.json();
+                
+                resultDiv.innerHTML = `配置信息:\n\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">请求错误:</span> ${error.message}`;
+                resultDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html> 

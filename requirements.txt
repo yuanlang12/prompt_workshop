@@ -1,0 +1,17 @@
+# Web 框架
+fastapi==0.104.1
+uvicorn==0.24.0
+jinja2==3.1.2
+python-multipart==0.0.5
+pydantic==2.5.2
+
+# HTTP 客户端（调用 LLM API / Supabase）
+aiohttp==3.11.16
+httpx==0.26.0
+
+# Supabase（认证 + 数据存储）
+supabase==2.13.0
+
+# 配置与认证
+python-dotenv==1.0.0
+PyJWT==2.8.0

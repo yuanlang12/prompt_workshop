@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提示词工坊 - 验证邮箱</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/img/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="/static/img/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/img/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/static/img/favicon/site.webmanifest">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        .verify-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+        }
+        
+        .verify-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 500px;
+            max-width: 90%;
+            text-align: center;
+        }
+        
+        .verify-card h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .verify-card .icon {
+            font-size: 64px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .action-buttons {
+            margin-top: 30px;
+        }
+        
+        .action-buttons .btn {
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+        }
+        
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .verification-message {
+            margin: 30px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="verify-container">
+        <div class="verify-card">
+            <i class="ri-mail-check-line icon"></i>
+            <h1>请验证你的邮箱</h1>
+            <p>我们已向 <strong>{{ email }}</strong> 发送了验证邮件</p>
+            
+            <div class="verification-message">
+                <p>打开邮箱验证成功以后，可以直接前往登录</p>
+            </div>
+            
+            <div class="action-buttons">
+                <a href="/auth/login-page" class="btn btn-primary">前往登录</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,24 @@
+<svg width="500" height="300" viewBox="0 0 500 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景框架 -->
+  <rect width="500" height="300" rx="12" fill="white" stroke="#E5E7EB" stroke-width="2"/>
+  
+  <!-- 输入区域 -->
+  <rect x="20" y="20" width="460" height="100" rx="8" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="1"/>
+  <rect x="36" y="36" width="120" height="8" rx="4" fill="#4B5563"/>
+  <rect x="36" y="60" width="420" height="8" rx="4" fill="#D1D5DB"/>
+  <rect x="36" y="76" width="350" height="8" rx="4" fill="#D1D5DB"/>
+  <rect x="36" y="92" width="380" height="8" rx="4" fill="#D1D5DB"/>
+  
+  <!-- 生成按钮 -->
+  <rect x="20" y="136" width="140" height="40" rx="8" fill="#2563EB"/>
+  <rect x="60" y="152" width="60" height="8" rx="4" fill="white"/>
+  
+  <!-- 箭头 -->
+  <path d="M250 190L250 210M250 210L240 200M250 210L260 200" stroke="#9CA3AF" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- 输出区域 -->
+  <rect x="20" y="220" width="460" height="60" rx="8" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+  <rect x="36" y="236" width="420" height="8" rx="4" fill="#3B82F6"/>
+  <rect x="36" y="252" width="400" height="8" rx="4" fill="#3B82F6"/>
+  <rect x="36" y="268" width="380" height="8" rx="4" fill="#3B82F6"/>
+</svg> 
