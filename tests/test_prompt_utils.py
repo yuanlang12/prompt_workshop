@@ -8,6 +8,7 @@
 import pytest
 
 from prompt_utils import (
+    apply_tool_guidance,
     extract_between_tags,
     extract_variables,
     find_free_floating_variables,
@@ -129,6 +130,32 @@ class TestFixUnicodeEscapes:
 
     def test_non_string_input(self):
         assert fix_unicode_escapes(None) == "None"
+
+
+class TestApplyToolGuidance:
+    """核心兼容性保证：不声明工具时，生成提示词与旧版本逐字节一致"""
+
+    def test_none_returns_identical(self):
+        assert apply_tool_guidance("BASE", None) == "BASE"
+
+    def test_empty_list_returns_identical(self):
+        assert apply_tool_guidance("BASE", []) == "BASE"
+
+    def test_blank_lines_only_returns_identical(self):
+        assert apply_tool_guidance("BASE", ["", "   "]) == "BASE"
+
+    def test_tools_appended_with_guidance(self):
+        out = apply_tool_guidance("BASE", ["web_search — 联网搜索"])
+        assert out.startswith("BASE")
+        assert "<available_tools>" in out
+        assert "web_search — 联网搜索" in out
+        assert "<tool_usage>" in out
+
+    def test_blank_lines_filtered(self):
+        out = apply_tool_guidance("BASE", ["", "a_tool — 查询资料", " "])
+        block = out.split("<available_tools>")[1].split("</available_tools>")[0]
+        tool_lines = [l for l in block.splitlines() if l.strip().startswith("- ")]
+        assert tool_lines == ["- a_tool — 查询资料"]
 
 
 if __name__ == "__main__":

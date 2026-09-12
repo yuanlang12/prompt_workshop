@@ -131,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const genDialog = document.querySelector('#generate-dialog');
     const dlgTask = document.querySelector('#dlg-task-description');
     const dlgVars = document.querySelector('#dlg-variables');
+    const dlgTools = document.querySelector('#dlg-tools');
     const dlgStartBtn = document.querySelector('#dlg-start-generate');
     const dlgCancelBtn = document.querySelector('#dlg-cancel-generate');
     const dlgInputSection = document.querySelector('#dlg-input-section');
@@ -640,6 +641,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // 变量来源：只从对话框内获取
         const variablesText = (dlgVars?.value || '').trim();
         const variables = variablesText ? variablesText.split(',').map(v => v.trim()).filter(Boolean) : [];
+        // 可用工具/MCP/Skills（可选）：一行一个，留空时与常规生成完全一致
+        const tools = (dlgTools?.value || '')
+            .split('\n')
+            .map(t => t.trim())
+            .filter(Boolean);
 
         try {
             if (dlgPreviewSection) dlgPreviewSection.style.display = 'block';
@@ -652,6 +658,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 project_id: currentProjectId,
                 task: task,
                 variables: variables,
+                tools: tools.length ? tools : undefined,
                 save: false // 预览模式，不落库
             }, dlgOutput);
             const result = resolveStreamedPrompt(final, raw);

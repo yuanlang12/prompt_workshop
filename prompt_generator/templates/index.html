@@ -303,6 +303,14 @@
                             class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-40)] shadow-sm"
                             placeholder="例如：SCENARIO, CUSTOMER_NAME">
                     </div>
+                    <div class="space-y-2">
+                        <label for="dlg-tools"
+                            class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">可用工具
+                            / MCP / Skills <span class="normal-case font-medium text-[color:var(--text-dim)]">(可选，留空则与常规生成一致)</span></label>
+                        <textarea id="dlg-tools" rows="3"
+                            class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-3 text-xs text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-40)] shadow-sm font-mono"
+                            placeholder="一行一个，格式：工具名 — 用途描述&#10;例如：&#10;web_search — 联网搜索最新资料&#10;crm_lookup — 查询客户 CRM 信息"></textarea>
+                    </div>
                     <div class="flex justify-end gap-3 pt-4">
                         <button id="dlg-start-generate"
                             class="w-full bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[color:var(--accent-primary-20)] flex items-center justify-center gap-2 group">

@@ -62,6 +62,7 @@ from project_operations import rename_project, delete_project_with_history
 
 # 文本解析工具（纯函数，带单元测试：tests/test_prompt_utils.py）
 from prompt_utils import (
+    apply_tool_guidance,
     extract_between_tags,
     extract_variables,
     find_free_floating_variables,
@@ -227,6 +228,9 @@ class Task(BaseModel):
     stream: bool = False
     # 是否保存生成结果为历史版本；为确保不自动保存，默认 False
     save: bool = False
+    # 可用工具/MCP/Skills 声明（可选，如 "web_search — 联网搜索"）。
+    # 不填时生成行为与旧版本完全一致
+    tools: Optional[List[str]] = None
 
 class ImproveRequest(BaseModel):
     project_id: str
@@ -997,8 +1001,10 @@ async def delete_project(
 # 路由处理函数
 def _generate_sse_generator(task: Task, current_user):
     """构造生成提示词的SSE生成器（共享给 /generate 和 /generate/stream）。"""
-    # 构造消息
-    prompt_text = CACHED_METAPROMPT.replace("{{TASK}}", task.task)
+    # 构造消息（声明了可用工具时追加工具使用规范要求；不填时与原行为逐字节一致）
+    prompt_text = apply_tool_guidance(
+        CACHED_METAPROMPT.replace("{{TASK}}", task.task), task.tools
+    )
 
     async def sse_generator():
         accumulated = ""
@@ -2066,25 +2072,26 @@ async def get_prompt_versions(
         logger.error(f"获取提示词历史版本列表失败: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def generate_prompt_template(task: str) -> str:
+async def generate_prompt_template(task: str, tools: Optional[List[str]] = None) -> str:
     """生成提示词模板
-    
+
     Args:
         task: 用户的任务描述
-        
+        tools: 可用工具/MCP/Skills 声明（可选，不填时与旧版行为一致）
+
     Returns:
         生成的提示词模板
     """
     try:
         logger.info(f"开始生成提示词模板，任务描述长度: {len(task)}字符")
-        # 使用缓存的metaprompt，替换任务描述
-        prompt = CACHED_METAPROMPT.replace("{{TASK}}", task)
-        
+        # 使用缓存的metaprompt，替换任务描述（声明了工具时追加工具使用规范要求）
+        prompt = apply_tool_guidance(CACHED_METAPROMPT.replace("{{TASK}}", task), tools)
+
         # 如果任务描述过长，可能导致超时，尝试截断
         if len(task) > 3000:
             logger.warning(f"任务描述过长({len(task)}字符)，截断至3000字符")
             task_truncated = task[:3000] + "..."
-            prompt = CACHED_METAPROMPT.replace("{{TASK}}", task_truncated)
+            prompt = apply_tool_guidance(CACHED_METAPROMPT.replace("{{TASK}}", task_truncated), tools)
         
         logger.info("调用API生成提示词模板...")
         # 调用API生成提示词模板

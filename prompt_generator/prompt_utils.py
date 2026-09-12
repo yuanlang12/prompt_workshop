@@ -6,7 +6,7 @@
 import json
 import logging
 import re
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -335,3 +335,41 @@ def parse_sections(text: str, tags: List[str]) -> Tuple[Dict[str, str], List[str
         else:
             missing.append(tag)
     return sections, missing
+
+
+def apply_tool_guidance(prompt: str, tools: Optional[List[str]] = None) -> str:
+    """为 Metaprompt 生成指令追加「工具使用规范」要求（MCP 工具 / Skills 场景）。
+
+    兼容性保证：tools 为 None 或全为空行时，原样返回 prompt——
+    与不选择工具的旧版本行为逐字节一致，不影响既有变量/示例的生成质量。
+
+    Args:
+        prompt: 已注入 {{TASK}} 的完整 Metaprompt 文本
+        tools: 用户声明的可用工具列表，每项格式如 "web_search — 联网搜索最新资料"
+
+    Returns:
+        处理后的提示词文本
+    """
+    if not tools:
+        return prompt
+    lines = [t.strip() for t in tools if t and t.strip()]
+    if not lines:
+        return prompt
+
+    tool_block = "\n".join(f"- {line}" for line in lines)
+    addendum = f"""
+
+<available_tools>
+The AI assistant in the following task has access to these external tools (MCP tools / skills):
+{tool_block}
+</available_tools>
+
+Additional requirement: when writing the instructions, additionally include a
+<tool_usage> section inside the <Instructions> that defines:
+- When to use each listed tool, and when to answer directly without tools
+- The order and combination of tool calls when multiple tools are needed
+- How to handle tool failures, timeouts, or empty results
+- A call budget (e.g., the maximum number of invocations) to avoid loops
+Tools not listed in <available_tools> must never be mentioned in the instructions."""
+
+    return prompt + addendum
