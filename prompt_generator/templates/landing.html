@@ -7,8 +7,8 @@
     <!-- SEO Optimization -->
     <title>提示词工坊 Prompt Gongfang - 专业AI提示词工程平台</title>
     <meta name="description"
-        content="提示词工坊是一个专业的AI提示词管理与优化平台。提供版本控制、AI自动优化、多模型测试等功能，帮助你打造高质量的Prompt。支持DeepSeek, Qwen等主流模型。">
-    <meta name="keywords" content="提示词, Prompt Engineering, AI, LLM, 提示词优化, DeepSeek, Qwen, 提示词管理, Metaprompt">
+        content="AI 随手写的提示词，你敢直接用吗？提示词工坊提供专业管线生成、真实模型 A/B 测试、版本化迭代，让每一个提示词都经得起检验。支持 DeepSeek、Qwen 等主流模型。">
+    <meta name="keywords" content="提示词, Prompt Engineering, AI, LLM, 提示词测试, A/B 对比, 提示词优化, DeepSeek, Qwen, Metaprompt">
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/static/img/favicon/favicon.svg">
@@ -56,13 +56,13 @@
 
             <h1
                 class="text-4xl md:text-6xl lg:text-7xl font-bold brand-font text-[color:var(--text-primary)] tracking-tight mb-8 leading-tight">
-                告别手写提示词的<br>
+                AI 写的提示词，<br>
                 <span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-[color:var(--accent-primary)] to-[#E68A6D]">低效与混乱</span>
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-[color:var(--accent-primary)] to-[#E68A6D]">你敢直接用吗？</span>
             </h1>
 
             <p class="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-[color:var(--text-secondary)] leading-relaxed mb-10">
-                用自然语言描述你的需求，AI 自动生成结构化、可复用的专业级 Prompt。内置最佳实践，一键优化，让每一次与 LLM 的对话都高效精准。
+                一次生成的提示词洋洋洒洒，换模型就翻车。专业不是"会写"，而是"生成 → 测试 → 迭代"的完整闭环。
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -87,8 +87,8 @@
     <section id="how-it-works" class="py-24 bg-[color:var(--bg-sidebar-50)] border-t border-[color:var(--border-subtle)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold brand-font text-[color:var(--text-primary)] mb-4">为什么生成的 Prompt 比手写更好？</h2>
-                <p class="text-[color:var(--text-dim)] max-w-xl mx-auto">手写 Prompt 常见的问题，我们都帮你解决了</p>
+                <h2 class="text-3xl font-bold brand-font text-[color:var(--text-primary)] mb-4">为什么随手问 AI 写的不够用？</h2>
+                <p class="text-[color:var(--text-dim)] max-w-xl mx-auto">不是写得不好，而是你无法验证它好不好</p>
             </div>
 
             <!-- Comparison Grid -->
@@ -99,24 +99,24 @@
                         <div class="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
                             <i class="ri-close-line text-xl text-rose-600"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-rose-800">手写 Prompt 的痛点</h3>
+                        <h3 class="text-xl font-bold text-rose-800">随手问 AI 的痛点</h3>
                     </div>
                     <ul class="space-y-4 text-rose-700">
                         <li class="flex items-start gap-3">
                             <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
-                            <span><strong>结构混乱</strong>：想到哪写到哪，缺乏系统性，AI 经常理解偏差</span>
+                            <span><strong>一次成型，无法验证</strong>：看起来头头是道，好不好用只有真用了才知道，翻车成本由你承担</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
-                            <span><strong>遗漏关键要素</strong>：忘记添加输出格式、角色设定或边界条件</span>
+                            <span><strong>评估没有标准</strong>：说不出它哪里好哪里差——因为判断标准本身就在提示词专业能力里</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
-                            <span><strong>难以复用</strong>：每次都从头写，无法参数化处理变量</span>
+                            <span><strong>换个模型就失效</strong>：在 A 模型上表现不错，换到 B 模型完全变样，你没有任何手段对比</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-error-warning-line text-lg mt-0.5 text-rose-500"></i>
-                            <span><strong>优化盲目</strong>：不知道哪里出问题，只能反复试错</span>
+                            <span><strong>越改越乱</strong>：每次让 AI 重写都是推倒重来，没有版本、没有积累</span>
                         </li>
                     </ul>
                 </div>
@@ -132,19 +132,19 @@
                     <ul class="space-y-4 text-emerald-700">
                         <li class="flex items-start gap-3">
                             <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
-                            <span><strong>结构化生成</strong>：自动包含角色、规则、示例、输出格式等完整模块</span>
+                            <span><strong>专业管线生成</strong>：基于 Metaprompt 方法论，角色、规则、示例、输出格式一步到位</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
-                            <span><strong>内置最佳实践</strong>：XML 标签分隔、思维链推理、变量占位符</span>
+                            <span><strong>真实模型测试</strong>：变量化填空即可运行，好不好用，跑一遍就知道</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
-                            <span><strong>参数化模板</strong>：自动识别变量，一套 Prompt 适配多种场景</span>
+                            <span><strong>A/B 对比</strong>：两个模型同题并行跑，差异一目了然，换模型也不怕</span>
                         </li>
                         <li class="flex items-start gap-3">
                             <i class="ri-checkbox-circle-line text-lg mt-0.5 text-emerald-500"></i>
-                            <span><strong>智能优化</strong>：AI 分析弱点，给出具体改进方案并自动执行</span>
+                            <span><strong>版本化迭代</strong>：每次修改自动留版本，逐行对比差异，随时回滚</span>
                         </li>
                     </ul>
                 </div>
@@ -157,22 +157,22 @@
                     <!-- Before -->
                     <div class="p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-[color:var(--border-subtle)]">
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="px-2 py-0.5 bg-rose-100 text-rose-600 text-xs font-bold rounded">手写版</span>
-                            <span class="text-sm text-[color:var(--text-dim)]">典型用户输入</span>
+                            <span class="px-2 py-0.5 bg-rose-100 text-rose-600 text-xs font-bold rounded">随手问 AI</span>
+                            <span class="text-sm text-[color:var(--text-dim)]">一次生成的结果</span>
                         </div>
                         <div
                             class="bg-[color:var(--bg-main)] rounded-lg p-4 font-mono text-sm text-[color:var(--text-secondary)] leading-relaxed">
-                            <p class="text-[color:var(--text-dim)] italic">帮我写一个客服机器人的提示词，要礼貌，回答问题要准确。</p>
+                            <p class="text-[color:var(--text-dim)] italic">"帮我写一个客服机器人的提示词，要礼貌，回答问题要准确。"</p>
+                            <p class="mt-3">好的，这是一份专业的客服机器人提示词，包含角色设定、回答规范……（洋洋洒洒 800 字）</p>
                         </div>
-                        <p class="mt-4 text-sm text-[color:var(--text-dim)]">❌ 缺少角色定义、FAQ来源、错误处理、输出格式...</p>
+                        <p class="mt-4 text-sm text-[color:var(--text-dim)]">❌ 没测过、没版本、没对比——好不好用，全凭运气</p>
                     </div>
 
                     <!-- After -->
                     <div class="p-6 lg:p-8 bg-[color:var(--bg-sidebar-30)]">
                         <div class="flex items-center gap-2 mb-4">
-                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-xs font-bold rounded">AI
-                                生成版</span>
-                            <span class="text-sm text-[color:var(--text-dim)]">自动生成的专业 Prompt</span>
+                            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-xs font-bold rounded">提示词工坊</span>
+                            <span class="text-sm text-[color:var(--text-dim)]">生成 + 测试 + 迭代</span>
                         </div>
                         <div
                             class="bg-[color:var(--bg-main)] rounded-lg p-4 font-mono text-xs text-[color:var(--text-secondary)] leading-relaxed max-h-48 overflow-y-auto">
@@ -195,7 +195,7 @@
                             <p class="text-[color:var(--text-dim)]">请先在 &lt;thinking&gt; 中找到相关 FAQ 内容，然后在 &lt;answer&gt;
                                 中回复用户。</p>
                         </div>
-                        <p class="mt-4 text-sm text-emerald-600">✅ 完整的角色、规则、变量、推理步骤、输出格式</p>
+                        <p class="mt-4 text-sm text-emerald-600">✅ 同样的专业结构，但每一版都经过真实模型测试与 A/B 对比</p>
                     </div>
                 </div>
             </div>
@@ -252,13 +252,12 @@
                         class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                         <i class="ri-test-tube-line text-2xl text-indigo-600"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-[color:var(--text-primary)] mb-3">即时测试</h3>
-                    <p class="text-[color:var(--text-secondary)] leading-relaxed mb-4">直接在平台里填入变量值，一键调用 DeepSeek、Qwen
-                        等模型运行测试，即时查看真实输出效果。</p>
+                    <h3 class="text-xl font-bold text-[color:var(--text-primary)] mb-3">真实测试</h3>
+                    <p class="text-[color:var(--text-secondary)] leading-relaxed mb-4">填入变量值一键运行，A/B 双模型同题并行对比——好不好用不靠感觉，跑一遍就知道。</p>
                     <ul class="text-sm text-[color:var(--text-dim)] space-y-1">
                         <li>• 可视化变量填写</li>
-                        <li>• 多模型对比测试</li>
-                        <li>• 结果一键复制</li>
+                        <li>• A/B 双模型并行对比</li>
+                        <li>• 支持图片多模态输入</li>
                     </ul>
                 </div>
             </div>
@@ -336,10 +335,10 @@
     <section class="py-24 border-t border-[color:var(--border-subtle)]">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-bold brand-font text-[color:var(--text-primary)] mb-6">
-                准备好告别低效的手写提示词了吗？
+                让每一个提示词，都经得起测试
             </h2>
             <p class="text-lg text-[color:var(--text-secondary)] mb-10">
-                免费注册，立即开始用 AI 打造专业级 Prompt
+                免费注册，用"生成 → 测试 → 迭代"的专业闭环打造你的 Prompt
             </p>
             <a href="/auth"
                 class="inline-flex items-center gap-2 px-10 py-5 bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-lg font-bold rounded-full transition-all shadow-xl shadow-[color:var(--accent-primary-30)] hover:-translate-y-1">
@@ -355,7 +354,7 @@
             class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
                 <h4 class="font-bold brand-font text-[color:var(--text-primary)] mb-2">提示词工坊</h4>
-                <p class="text-sm text-[color:var(--text-dim)]">© 2024 Prompt Gongfang. All rights reserved.</p>
+                <p class="text-sm text-[color:var(--text-dim)]">© 2026 Prompt Gongfang. All rights reserved.</p>
             </div>
             <div class="flex gap-6">
                 <a href="#" class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"><i
