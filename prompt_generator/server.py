@@ -60,6 +60,15 @@ from pydantic import validator
 # 导入项目操作工具函数
 from project_operations import rename_project, delete_project_with_history
 
+# 文本解析工具（纯函数，带单元测试：tests/test_prompt_utils.py）
+from prompt_utils import (
+    extract_between_tags,
+    extract_variables,
+    find_free_floating_variables,
+    fix_unicode_escapes,
+    parse_sections,
+)
+
 # 导入环境变量
 from config.settings import AVAILABLE_MODELS
 
@@ -176,176 +185,6 @@ async def read_root(request: Request):
 async def landing_page(request: Request):
     """Landing page - 官网/首页，可用于预览或分享"""
     return templates.TemplateResponse("landing.html", {"request": request})
-
-def extract_between_tags(tag: str, text: str, strip: bool = True) -> List[str]:
-    """从文本中提取指定标签之间的内容
-    
-    支持以下格式:
-    1. 完整的XML标签: <tag>content</tag>
-    2. 只有开始标签: <tag>content
-    3. 标签名可能包含空格
-    4. 标签名大小写不敏感
-    5. 兼容标签名单复数形式
-    
-    Args:
-        tag: 标签名
-        text: 要处理的文本
-        strip: 是否去除结果中的首尾空白字符,默认为True
-        
-    Returns:
-        包含标签内容的列表
-    """
-    try:
-        # 确保文本是字符串类型
-        if not isinstance(text, str):
-            logger.warning(f"Text is not a string: {type(text)}")
-            if isinstance(text, bytes):
-                text = text.decode('utf-8', errors='replace')
-            else:
-                text = str(text)
-        
-        # 检查文本是否是有效的UTF-8字符串
-        try:
-            text.encode('utf-8').decode('utf-8')
-        except UnicodeError:
-            # 如果不是有效的UTF-8字符串，尝试修复
-            try:
-                # 尝试以latin1解码再编码为utf-8
-                text = text.encode('latin1').decode('utf-8', errors='replace')
-            except Exception as e:
-                logger.error(f"尝试修复文本编码失败: {str(e)}")
-        
-        # 检查文本是否包含Unicode转义序列，如果有则尝试修复
-        if '\\u' in text or '\\x' in text:
-            text = fix_unicode_escapes(text)
-        
-        # 处理标签名中可能包含的空格
-        tag_pattern = tag.replace(" ", r"\s+")
-        
-        # 生成单数和复数形式的模式
-        # 如果标签已经是复数形式，生成单数形式；如果是单数形式，生成复数形式
-        tags_to_try = [tag_pattern]
-        
-        # 检查标签是否以's'结尾
-        if tag_pattern.endswith('s'):
-            # 如果是复数形式，添加单数形式
-            singular_tag = tag_pattern[:-1]
-            tags_to_try.append(singular_tag)
-        else:
-            # 如果是单数形式，添加复数形式
-            plural_tag = tag_pattern + 's'
-            tags_to_try.append(plural_tag)
-        
-        matches = []
-        
-        # 尝试每个标签形式
-        for current_tag in tags_to_try:
-            # 尝试匹配完整的XML标签
-            complete_pattern = f"<{current_tag}>(.+?)</{current_tag}>"
-            current_matches = re.findall(complete_pattern, text, re.DOTALL | re.IGNORECASE)
-            
-            # 如果没有找到完整标签，取开始标签到文本末尾的全部内容。
-            # 注意：不能用 (?=<|$) 非贪婪截断，否则会在 Instructions 内的
-            # <tool>、<thinking> 等子标签处提前截断，导致保存内容丢失。
-            if not current_matches:
-                incomplete_pattern = f"<{current_tag}>([\\s\\S]*)"
-                current_matches = re.findall(incomplete_pattern, text, re.IGNORECASE)
-            
-            if current_matches:
-                matches.extend(current_matches)
-                logger.debug(f"找到标签 {current_tag} 的匹配: {len(current_matches)}个")
-                break  # 找到匹配后可以停止尝试其他形式
-        
-        if not matches:
-            logger.debug(f"未找到标签 {tag} 或其单复数形式的匹配")
-            return []
-            
-        logger.debug(f"提取标签 {tag}（含单复数形式），找到 {len(matches)} 个匹配")
-        if matches:
-            logger.debug(f"第一个匹配内容长度: {len(matches[0])}")
-            
-        # 移除重复的匹配结果
-        unique_matches = list(dict.fromkeys(matches))
-        
-        # 处理每个匹配结果，确保它们是有效的UTF-8字符串
-        processed_matches = []
-        for m in unique_matches:
-            if m:
-                # 确保匹配结果是有效的UTF-8字符串
-                try:
-                    if isinstance(m, bytes):
-                        m = m.decode('utf-8', errors='replace')
-                    # 检查并修复可能的Unicode转义序列
-                    if '\\u' in m or '\\x' in m:
-                        m = fix_unicode_escapes(m)
-        # 根据strip参数决定是否去除空白字符
-                    processed_matches.append(m.strip() if strip else m)
-                except Exception as e:
-                    logger.error(f"处理匹配结果时出错: {str(e)}")
-                    processed_matches.append(m if isinstance(m, str) else str(m))
-        
-        return processed_matches
-            
-    except Exception as e:
-        logger.error(f"Error extracting tags: {str(e)}")
-        return []
-
-def extract_variables(text: str) -> Set[str]:
-    """提取文本中的所有变量名
-    
-    支持三种格式:
-    1. {$VARIABLE} - 标准格式
-    2. {{VARIABLE}} - 双大括号格式
-    3. ${VARIABLE} - 美元符号格式
-    
-    Args:
-        text: 要处理的文本
-        
-    Returns:
-        变量名集合
-    """
-    # 匹配三种格式的变量
-    standard_vars = set(re.findall(r'\{\$([A-Za-z0-9_]+)\}', text))
-    double_brace_vars = set(re.findall(r'\{\{([A-Za-z0-9_]+)\}\}', text))
-    dollar_vars = set(re.findall(r'\$\{([A-Za-z0-9_]+)\}', text))
-    
-    # 合并所有格式的结果
-    return standard_vars.union(double_brace_vars).union(dollar_vars)
-
-def find_free_floating_variables(prompt: str) -> List[str]:
-    """检测提示词中的浮动变量
-    
-    Args:
-        prompt: 提示词文本
-        
-    Returns:
-        浮动变量列表（在XML标签外的变量）
-    """
-    variable_usages = re.findall(r'\{\$[A-Z0-9_]+\}', prompt)
-    free_floating_variables = []
-    
-    for variable in variable_usages:
-        preceding_text = prompt[:prompt.index(variable)]
-        open_tags = set()
-        
-        i = 0
-        while i < len(preceding_text):
-            if preceding_text[i] == '<':
-                if i + 1 < len(preceding_text) and preceding_text[i + 1] == '/':
-                    closing_tag = preceding_text[i + 2:].split('>', 1)[0]
-                    open_tags.discard(closing_tag)
-                    i += len(closing_tag) + 3
-                else:
-                    opening_tag = preceding_text[i + 1:].split('>', 1)[0]
-                    open_tags.add(opening_tag)
-                    i += len(opening_tag) + 2
-            else:
-                i += 1
-                
-        if not open_tags:
-            free_floating_variables.append(variable)
-            
-    return free_floating_variables
 
 async def remove_inapt_floating_variables(prompt: str) -> str:
     """处理提示词中的不当浮动变量
@@ -1116,8 +955,8 @@ async def rename_project_api(
             logger.warning(f"用户 {current_user.id} 尝试重命名不属于他的项目 {project_id}")
             return error_response(403, "您没有权限修改此项目", "insufficient_permissions")
         
-        # 使用增强的重命名函数
-        updated_project = await rename_project(project_id, project.name, supabase_db)
+        # 使用增强的重命名函数（数据库层附加归属过滤）
+        updated_project = await rename_project(project_id, project.name, supabase_db, user_id=current_user.id)
         if not updated_project:
             return error_response(500, "项目重命名失败", "project_rename_failed")
             
@@ -1145,8 +984,8 @@ async def delete_project(
             logger.warning(f"用户 {current_user.id} 尝试删除不属于他的项目 {project_id}")
             return error_response(403, "您没有权限删除此项目", "insufficient_permissions")
         
-        # 使用增强的删除函数，确保删除所有相关数据
-        success = await delete_project_with_history(project_id, supabase_db)
+        # 使用增强的删除函数，确保删除所有相关数据（数据库层校验归属）
+        success = await delete_project_with_history(project_id, supabase_db, user_id=current_user.id)
         if not success:
             return error_response(500, "项目删除失败", "project_deletion_failed")
             
@@ -1659,112 +1498,6 @@ def extract_test_response(response) -> str:
             logger.error(f"最终提取失败: {str(final_error)}")
             return "无法提取响应内容"
 
-def fix_unicode_escapes(text):
-    """修复Unicode和十六进制转义序列"""
-    if not isinstance(text, str):
-        logger.warning(f"fix_unicode_escapes接收到非字符串类型: {type(text)}")
-        try:
-            if isinstance(text, bytes):
-                text = text.decode('utf-8', errors='replace')
-            else:
-                text = str(text)
-        except Exception as e:
-            logger.error(f"转换为字符串失败: {str(e)}")
-            return str(text)
-    
-    # 如果没有转义序列，直接返回
-    if '\\x' not in text and '\\u' not in text and '%' not in text:
-        return text
-    
-    try:
-        # 尝试修复不同类型的编码问题
-        
-        # 1. 处理 \uXXXX 格式
-        def replace_unicode(match):
-            try:
-                code = match.group(1)
-                if len(code) == 4:  # \uXXXX 格式
-                    return chr(int(code, 16))
-                return match.group(0)
-            except Exception as e:
-                logger.warning(f"Unicode替换失败: {str(e)}")
-                return match.group(0)
-        
-        # 2. 处理 \xXX 格式
-        def replace_hex(match):
-            try:
-                code = match.group(1)
-                if len(code) == 2:  # \xXX 格式
-                    return bytes.fromhex(code).decode('utf-8')
-                return match.group(0)
-            except Exception as e:
-                logger.warning(f"Hex替换失败: {str(e)}")
-                return match.group(0)
-        
-        # 3. 处理URL编码 %XX 格式
-        def replace_url_encoding(match):
-            try:
-                code = match.group(1)
-                if len(code) == 2:  # %XX 格式
-                    return bytes.fromhex(code).decode('utf-8')
-                return match.group(0)
-            except Exception as e:
-                logger.warning(f"URL编码替换失败: {str(e)}")
-                return match.group(0)
-        
-        # 先处理 \uXXXX 格式
-        fixed_text = re.sub(r'\\u([0-9a-fA-F]{4})', replace_unicode, text)
-        # 再处理 \xXX 格式
-        fixed_text = re.sub(r'\\x([0-9a-fA-F]{2})', replace_hex, fixed_text)
-        # 再处理 %XX 格式
-        fixed_text = re.sub(r'%([0-9a-fA-F]{2})', replace_url_encoding, fixed_text)
-        
-        # 检查是否有明显的乱码字符（替换字符或控制字符）
-        if '\ufffd' in fixed_text or any(ord(c) < 32 and c not in '\r\n\t' for c in fixed_text):
-            logger.debug("检测到可能的乱码，尝试其他修复方法")
-            
-            # 方法1: latin1 -> utf-8 转换
-            try:
-                latin1_fixed = text.encode('latin1').decode('utf-8', errors='replace')
-                if not any(c == '\ufffd' for c in latin1_fixed):
-                    logger.debug("latin1 -> utf-8转换成功")
-                    return latin1_fixed
-            except Exception as e:
-                logger.error(f"latin1到utf-8转换失败: {str(e)}")
-            
-            # 方法2: 尝试JSON解析（处理双重转义）
-            try:
-                # 尝试解析JSON字符串，处理双重转义的情况
-                import json
-                # 将转义字符处理为JSON字符串格式
-                json_str = '"' + text.replace('"', '\\"') + '"'
-                json_fixed = json.loads(json_str)
-                if not any(c == '\ufffd' for c in json_fixed):
-                    logger.debug("JSON解析修复成功")
-                    return json_fixed
-            except Exception as e:
-                logger.debug(f"JSON解析修复失败: {str(e)}")
-            
-            # 方法3: 移除无效字符
-            try:
-                # 移除所有控制字符和替换字符
-                cleaned_text = ''.join(c for c in fixed_text if ord(c) >= 32 or c in '\r\n\t')
-                logger.debug("移除了无效字符")
-                return cleaned_text
-            except Exception as e:
-                logger.error(f"移除无效字符失败: {str(e)}")
-        
-        # 如果修复后的文本看起来合理，使用它
-        if not any(c == '\ufffd' for c in fixed_text):
-            return fixed_text
-        
-        # 如果所有方法都失败，返回原始文本
-        logger.warning("所有修复方法都失败，返回原始文本")
-        return text
-    except Exception as e:
-        logger.error(f"修复编码失败: {str(e)}")
-        return text
-
 def remove_empty_tags(text: str) -> str:
     """移除空的XML标签"""
     try:
@@ -1979,6 +1712,43 @@ async def save_prompt(
         logger.error(f"保存提示词失败: {str(e)}")
         raise HTTPException(status_code=500, detail=f"保存提示词失败: {str(e)}")
 
+async def call_llm_and_parse(messages: List[dict], required_tags: List[str], max_retries: int = 1):
+    """调用 LLM 并按标签契约解析输出；缺少必需章节时附带错误反馈自动重试。
+
+    Args:
+        messages: 发送给模型的初始消息
+        required_tags: 输出中必须包含的章节标签
+        max_retries: 解析失败时的最大重试次数
+
+    Returns:
+        (response, sections, missing)：
+        - response: 最终一次的模型输出
+        - sections / missing: parse_sections 的解析结果
+    """
+    conversation = list(messages)
+    response = await create_chat_completion(messages=conversation)
+    sections, missing = parse_sections(response, required_tags)
+
+    retries = 0
+    while missing and retries < max_retries:
+        retries += 1
+        logger.warning(f"模型输出缺少章节 {missing}，进行第 {retries} 次重试")
+        conversation = conversation + [
+            {"role": "assistant", "content": response},
+            {"role": "user", "content": (
+                "Your previous response is missing required XML sections: "
+                + ", ".join(f"<{t}>" for t in missing)
+                + ". Please write the COMPLETE response again, and wrap every required "
+                  "section in its own XML tag, e.g. "
+                + " ".join(f"<{t}>...</{t}>" for t in missing)
+                + ". Do not omit any section."
+            )},
+        ]
+        response = await create_chat_completion(messages=conversation)
+        sections, missing = parse_sections(response, required_tags)
+
+    return response, sections, missing
+
 @app.post("/improve")
 async def improve_prompt(
     request: ImproveRequest,
@@ -2015,24 +1785,21 @@ async def improve_prompt(
         
         logger.debug(f"Constructed messages: {messages}")
         
-        # 调用 API
+        # 调用 API 并按标签契约解析（缺章节时自动重试一次）
         try:
-            response = await create_chat_completion(messages=messages)
-            logger.debug(f"API response: {response}")
+            response, sections, missing = await call_llm_and_parse(
+                messages, ["Planning initial draft", "Writing prompts"]
+            )
         except Exception as e:
             logger.error(f"API call failed: {str(e)}")
             raise HTTPException(status_code=500, detail=f"API调用失败: {str(e)}")
-        
-        # 提取规划和提示词
-        planning = extract_between_tags("Planning initial draft", response)
-        if not planning:
-            logger.error(f"No planning found in response: {response}")
-            raise HTTPException(status_code=400, detail="No planning generated")
-            
-        writing_prompts = extract_between_tags("Writing prompts", response)
-        if not writing_prompts:
-            logger.error(f"No writing prompts found in response: {response}")
-            raise HTTPException(status_code=400, detail="No writing prompts generated")
+
+        if missing:
+            logger.error(f"模型输出缺少章节 {missing}，响应片段: {response[:500]}")
+            raise HTTPException(status_code=400, detail=f"模型输出缺少必需章节: {', '.join(missing)}")
+
+        planning = [sections["Planning initial draft"]]
+        writing_prompts = [sections["Writing prompts"]]
         
         # 处理浮动变量 - 添加此逻辑
         processed_prompt = await process_floating_variables(writing_prompts[0])
@@ -2115,21 +1882,22 @@ async def revise_prompt(
             "content": content
         }]
         
-        # 调用 API
+        # 调用 API 并按标签契约解析（缺章节时自动重试一次）
         try:
-            response = await create_chat_completion(messages=messages)
-            logger.debug(f"API response: {response}")
+            response, sections, missing = await call_llm_and_parse(
+                messages, ["Modification plan analysis", "final draft prompt"]
+            )
         except Exception as e:
             logger.error(f"API call failed: {str(e)}")
             raise
-        
+
         # 提取修改计划和最终提示词（使用正确的标签名）
-        modification_plan = extract_between_tags("Modification plan analysis", response)
+        modification_plan = [sections["Modification plan analysis"]] if "Modification plan analysis" in sections else []
         if not modification_plan:
             logger.error(f"No modification plan found in response: {response}")
             raise HTTPException(status_code=400, detail="No modification plan generated")
-            
-        final_prompt = extract_between_tags("final draft prompt", response)
+
+        final_prompt = [sections["final draft prompt"]] if "final draft prompt" in sections else []
         if not final_prompt:
             logger.warning("No final draft prompt tags found, trying to extract content after modification plan")
             try:

@@ -161,16 +161,19 @@ class SupabaseDB:
         import asyncio
         return await asyncio.to_thread(_sync_get)
 
-    async def get_project(self, project_id: str) -> Dict[str, Any]:
-        """异步获取项目详情"""
+    async def get_project(self, project_id: str, user_id: Optional[str] = None) -> Dict[str, Any]:
+        """异步获取项目详情（提供 user_id 时附加归属过滤，防止越权读取）"""
         def _sync_get():
             try:
                 logger.debug(f"尝试获取项目: {project_id}")
                 admin_client = self.get_admin_client()
                 if not admin_client:
                     return None
-                    
-                response = admin_client.table("projects").select("*").eq("id", project_id).execute()
+
+                query = admin_client.table("projects").select("*").eq("id", project_id)
+                if user_id:
+                    query = query.eq("user_id", user_id)
+                response = query.execute()
                 
                 if response.data and len(response.data) > 0:
                     project = response.data[0]
@@ -186,9 +189,9 @@ class SupabaseDB:
         import asyncio
         return await asyncio.to_thread(_sync_get)
     
-    async def update_project(self, project_id: str, name: Optional[str] = None, 
-                      description: Optional[str] = None) -> Dict[str, Any]:
-        """异步更新项目信息"""
+    async def update_project(self, project_id: str, name: Optional[str] = None,
+                      description: Optional[str] = None, user_id: Optional[str] = None) -> Dict[str, Any]:
+        """异步更新项目信息（提供 user_id 时附加归属过滤，防止越权修改）"""
         def _sync_update():
             try:
                 update_data = {}
@@ -208,7 +211,10 @@ class SupabaseDB:
                 if not admin_client:
                     return None
                     
-                response = admin_client.table("projects").update(update_data).eq("id", project_id).execute()
+                update_query = admin_client.table("projects").update(update_data).eq("id", project_id)
+                if user_id:
+                    update_query = update_query.eq("user_id", user_id)
+                response = update_query.execute()
                 
                 if response.data and len(response.data) > 0:
                     logger.info(f"项目更新成功: {project_id}")
@@ -224,7 +230,7 @@ class SupabaseDB:
         # 但在 to_thread 里不能 await。
         # 策略：如果 update_data 为空，我们在外层处理，或者这里直接做一个 sync 的 get
         if name is None and description is None:
-            return await self.get_project(project_id)
+            return await self.get_project(project_id, user_id=user_id)
             
         return await asyncio.to_thread(_sync_update)
     
@@ -238,7 +244,8 @@ class SupabaseDB:
                 logger.info(f"删除项目 {project_id} 的相关数据")
                 admin_client.table("prompt_history").delete().eq("project_id", project_id).execute()
                 admin_client.table("prompts").delete().eq("project_id", project_id).execute()
-                project_response = admin_client.table("projects").delete().eq("id", project_id).execute()
+                project_response = admin_client.table("projects").delete().eq("id", project_id).eq("user_id", user_id).execute() if user_id \
+                    else admin_client.table("projects").delete().eq("id", project_id).execute()
                 
                 if project_response.data:
                     logger.info(f"项目删除成功: {project_id}")
@@ -335,15 +342,18 @@ class SupabaseDB:
         import asyncio
         return await asyncio.to_thread(_sync_get)
     
-    async def get_prompt(self, prompt_id: str) -> Dict[str, Any]:
-        """异步获取提示词详情"""
+    async def get_prompt(self, prompt_id: str, user_id: Optional[str] = None) -> Dict[str, Any]:
+        """异步获取提示词详情（提供 user_id 时附加归属过滤）"""
         def _sync_get():
             try:
                 admin_client = self.get_admin_client()
                 if not admin_client:
                     return None
-                    
-                response = admin_client.table("prompts").select("*").eq("id", prompt_id).execute()
+
+                query = admin_client.table("prompts").select("*").eq("id", prompt_id)
+                if user_id:
+                    query = query.eq("user_id", user_id)
+                response = query.execute()
                 
                 if response.data and len(response.data) > 0:
                     return response.data[0]
@@ -360,8 +370,8 @@ class SupabaseDB:
     async def update_prompt(self, prompt_id: str, content: Optional[str] = None,
                      version: Optional[int] = None, variables: Optional[Dict] = None,
                      title: Optional[str] = None, description: Optional[str] = None,
-                     is_public: Optional[bool] = None) -> Dict[str, Any]:
-        """异步更新提示词"""
+                     is_public: Optional[bool] = None, user_id: Optional[str] = None) -> Dict[str, Any]:
+        """异步更新提示词（提供 user_id 时附加归属过滤，防止越权修改）"""
         def _update_sync():
             try:
                 # 准备更新数据
@@ -387,7 +397,10 @@ class SupabaseDB:
                 if not admin_client:
                     return None
                     
-                response = admin_client.table("prompts").update(update_data).eq("id", prompt_id).execute()
+                update_query = admin_client.table("prompts").update(update_data).eq("id", prompt_id)
+                if user_id:
+                    update_query = update_query.eq("user_id", user_id)
+                response = update_query.execute()
                 
                 if response.data and len(response.data) > 0:
                     logger.info(f"提示词更新成功: {prompt_id}")
@@ -401,19 +414,22 @@ class SupabaseDB:
         import asyncio
         # Handle empty update externally or by a separate async get call if needed
         if all(x is None for x in [content, version, variables, title, description, is_public]):
-            return await self.get_prompt(prompt_id)
+            return await self.get_prompt(prompt_id, user_id=user_id)
 
         return await asyncio.to_thread(_update_sync)
     
-    async def delete_prompt(self, prompt_id: str) -> bool:
-        """异步删除提示词"""
+    async def delete_prompt(self, prompt_id: str, user_id: Optional[str] = None) -> bool:
+        """异步删除提示词（提供 user_id 时附加归属过滤，防止越权删除）"""
         def _sync_delete():
             try:
                 admin_client = self.get_admin_client()
                 if not admin_client:
                     return False
-                    
-                response = admin_client.table("prompts").delete().eq("id", prompt_id).execute()
+
+                delete_query = admin_client.table("prompts").delete().eq("id", prompt_id)
+                if user_id:
+                    delete_query = delete_query.eq("user_id", user_id)
+                response = delete_query.execute()
                 
                 if response.data:
                     logger.info(f"提示词删除成功: {prompt_id}")
@@ -572,18 +588,20 @@ class SupabaseDB:
         import asyncio
         return await asyncio.to_thread(_sync_get)
             
-    async def get_prompt_history_by_id(self, history_id: str) -> Optional[Dict[str, Any]]:
-        """异步根据ID获取单条历史记录"""
+    async def get_prompt_history_by_id(self, history_id: str, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """异步根据ID获取单条历史记录（提供 user_id 时附加归属过滤）"""
         def _sync_get():
             try:
                 admin_client = self.get_admin_client()
                 if not admin_client:
                     return None
-                    
-                response = admin_client.table("prompt_history") \
+
+                query = admin_client.table("prompt_history") \
                     .select("*") \
-                    .eq("id", history_id) \
-                    .execute()
+                    .eq("id", history_id)
+                if user_id:
+                    query = query.eq("user_id", user_id)
+                response = query.execute()
                     
                 if response.data and len(response.data) > 0:
                     return response.data[0]
@@ -596,8 +614,8 @@ class SupabaseDB:
         return await asyncio.to_thread(_sync_get)
             
     async def update_prompt_history(self, history_id: str, content: Optional[str] = None,
-                            change_summary: Optional[str] = None) -> Optional[Dict[str, Any]]:
-        """异步更新历史记录"""
+                            change_summary: Optional[str] = None, user_id: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """异步更新历史记录（提供 user_id 时附加归属过滤，防止越权修改）"""
         def _sync_update():
             try:
                 update_data = {}
@@ -615,10 +633,12 @@ class SupabaseDB:
                 if not admin_client:
                     return None
                     
-                response = admin_client.table("prompt_history") \
+                update_query = admin_client.table("prompt_history") \
                     .update(update_data) \
-                    .eq("id", history_id) \
-                    .execute()
+                    .eq("id", history_id)
+                if user_id:
+                    update_query = update_query.eq("user_id", user_id)
+                response = update_query.execute()
                     
                 if response.data and len(response.data) > 0:
                     logger.info(f"历史记录更新成功: {history_id}")
@@ -630,18 +650,21 @@ class SupabaseDB:
 
         import asyncio
         if content is None and change_summary is None:
-            return await self.get_prompt_history_by_id(history_id)
+            return await self.get_prompt_history_by_id(history_id, user_id=user_id)
             
         return await asyncio.to_thread(_sync_update)
             
-    async def delete_prompt_history(self, history_id: str) -> bool:
-        """异步删除历史记录"""
+    async def delete_prompt_history(self, history_id: str, user_id: Optional[str] = None) -> bool:
+        """异步删除历史记录（提供 user_id 时附加归属过滤，防止越权删除）"""
         def _sync_delete():
             try:
                 admin_client = self.get_admin_client()
                 if not admin_client:
                     return False
-                response = admin_client.table("prompt_history").delete().eq("id", history_id).execute()
+                delete_query = admin_client.table("prompt_history").delete().eq("id", history_id)
+                if user_id:
+                    delete_query = delete_query.eq("user_id", user_id)
+                response = delete_query.execute()
                 if response and getattr(response, 'data', None):
                      return True
                 return True 

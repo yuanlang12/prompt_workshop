@@ -1,0 +1,3 @@
+# 开发/测试依赖（生产部署无需安装）
+-r requirements.txt
+pytest==8.2.2
