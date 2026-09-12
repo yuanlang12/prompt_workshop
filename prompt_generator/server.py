@@ -109,7 +109,7 @@ if ALLOWED_ORIGINS:
         allow_headers=["*"],
     )
 
-# 缓存 metaprompt
+# 缓存 metaprompt（原文引自 Anthropic 公开的 Metaprompt，见 docs/prompts_attribution.md）
 with open(os.path.join(BASE_DIR, "config", "prompts", "metaprompt.txt"), "r", encoding="utf-8") as f:
     CACHED_METAPROMPT = f.read()
 

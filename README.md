@@ -19,6 +19,8 @@
 - 数据与认证：Supabase（PostgreSQL + Auth）
 - LLM：OpenAI 兼容 Chat Completions API
 
+> 提示词生成功能基于 [Anthropic 公开的 Metaprompt](docs/prompts_attribution.md)，优化/修订流程为本项目实现，来源与许可说明见 [docs/prompts_attribution.md](docs/prompts_attribution.md)。
+
 ## 快速开始
 
 ### 前置要求
