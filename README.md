@@ -27,7 +27,18 @@
 - 一个 [Supabase](https://supabase.com) 免费项目（用于用户认证和数据存储）
 - 一个 LLM API Key（任何 OpenAI 兼容服务均可）
 
-### 1. 安装依赖
+### 方式一：一键启动（推荐）
+
+克隆仓库后双击根目录的启动器，脚本会自动创建虚拟环境、安装依赖、交互式引导填入 Supabase 与 LLM 配置，完成后启动服务并自动打开浏览器：
+
+- **macOS**：双击 `start_mac.command`（如被系统拦截：右键 →「打开」，或在终端执行 `bash start_mac.command`）
+- **Windows**：双击 `start_windows.bat`
+
+> 注意：Supabase 的建表操作仍需手动执行一次，见下方「初始化 Supabase」；之后再次双击启动器即可直接启动。
+
+### 方式二：手动安装
+
+#### 1. 安装依赖
 
 ```bash
 git clone https://github.com/yuanlang12/prompt_workshop.git
@@ -38,7 +49,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 2. 初始化 Supabase
+#### 2. 初始化 Supabase
 
 1. 在 [Supabase](https://supabase.com) 创建一个免费项目
 2. 打开 **SQL Editor**，执行 [`docs/supabase_setup.sql`](docs/supabase_setup.sql) 的全部内容（建表 + 索引 + RLS）
@@ -49,7 +60,7 @@ pip install -r requirements.txt
 
 > 提示：本地试用可在 **Authentication -> Providers -> Email** 中关闭 "Confirm email" 跳过邮箱验证；生产环境建议开启并配置自定义 SMTP。
 
-### 3. 配置环境变量
+#### 3. 配置环境变量
 
 ```bash
 cp prompt_generator/config/.env.example prompt_generator/config/.env
@@ -70,7 +81,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 
 完整配置项见 [`prompt_generator/config/.env.example`](prompt_generator/config/.env.example)。
 
-### 4. 启动
+#### 4. 启动
 
 ```bash
 python prompt_generator/run_server.py
@@ -119,6 +130,9 @@ python prompt_generator/run_server.py
 ```
 ├── app.py                    # Vercel 入口
 ├── requirements.txt
+├── start_mac.command         # macOS 一键启动（双击）
+├── start_windows.bat         # Windows 一键启动（双击）
+├── scripts/setup.py          # 安装与启动引导脚本
 ├── prompt_generator/
 │   ├── server.py             # FastAPI 主应用与 API 路由
 │   ├── run_server.py         # 本地启动脚本
