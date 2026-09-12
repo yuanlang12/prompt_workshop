@@ -38,15 +38,15 @@
 </head>
 
 <body
-    class="bg-[var(--bg-main)] text-[var(--text-secondary)] antialiased h-dvh overflow-hidden selection:bg-[var(--accent-primary)]/20 font-sans">
+    class="bg-[color:var(--bg-main)] text-[color:var(--text-secondary)] antialiased h-dvh overflow-hidden selection:bg-[color:var(--accent-primary-20)] font-sans">
     <div class="app-container flex h-full w-full overflow-hidden">
         <!-- Sidebar -->
         <aside id="sidebar"
-            class="sidebar bg-[var(--bg-sidebar)] border-r border-[var(--border-subtle)] flex flex-col transition-all duration-200 z-50 w-[240px]">
-            <div class="logo-container flex items-center p-4 h-14 border-b border-[var(--border-subtle)]">
-                <h1 class="text-lg font-bold brand-font text-[var(--text-primary)] truncate">提示词工坊</h1>
+            class="sidebar bg-[color:var(--bg-sidebar)] border-r border-[color:var(--border-subtle)] flex flex-col transition-all duration-200 z-50 w-[240px]">
+            <div class="logo-container flex items-center p-4 h-14 border-b border-[color:var(--border-subtle)]">
+                <h1 class="text-lg font-bold brand-font text-[color:var(--text-primary)] truncate">提示词工坊</h1>
                 <button id="sidebar-toggle"
-                    class="sidebar-toggle ml-auto text-[var(--text-dim)] hover:text-[var(--text-primary)] p-1 rounded-md transition-colors"
+                    class="sidebar-toggle ml-auto text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] p-1 rounded-md transition-colors"
                     aria-label="收起侧边栏">
                     <i class="ri-arrow-left-s-line text-xl"></i>
                 </button>
@@ -54,8 +54,8 @@
 
             <div class="projects-section flex-1 flex flex-col overflow-hidden">
                 <div class="section-header px-4 py-3 flex items-center justify-between">
-                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)]">我的项目</h3>
-                    <button class="text-[var(--text-dim)] hover:text-[var(--accent-primary)] transition-colors"
+                    <h3 class="text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">我的项目</h3>
+                    <button class="text-[color:var(--text-dim)] hover:text-[color:var(--accent-primary)] transition-colors"
                         id="new-project-btn" aria-label="新建项目">
                         <i class="ri-add-line text-lg"></i>
                     </button>
@@ -68,21 +68,21 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="main-content flex-1 flex flex-col bg-[var(--bg-main)] overflow-hidden relative">
+        <main class="main-content flex-1 flex flex-col bg-[color:var(--bg-main)] overflow-hidden relative">
             <!-- Top Nav -->
             <nav
-                class="top-nav h-14 px-6 flex items-center justify-between border-b border-[var(--border-subtle)] bg-[var(--bg-surface)]/50 backdrop-blur-sm z-40">
+                class="top-nav h-14 px-6 flex items-center justify-between border-b border-[color:var(--border-subtle)] bg-[color:var(--bg-surface-50)] backdrop-blur-sm z-40">
                 <div class="current-project flex items-center gap-4">
-                    <h2 id="current-project-name" class="text-sm font-semibold text-[var(--text-primary)] brand-font">
+                    <h2 id="current-project-name" class="text-sm font-semibold text-[color:var(--text-primary)] brand-font">
                         未选择项目</h2>
                     <div class="flex items-center gap-1">
                         <button id="rename-project-btn"
-                            class="text-[var(--text-dim)] hover:text-[var(--text-primary)] p-1.5 rounded transition-colors"
+                            class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] p-1.5 rounded transition-colors"
                             aria-label="重命名项目">
                             <i class="ri-edit-line"></i>
                         </button>
                         <button id="delete-project-btn"
-                            class="text-[var(--text-dim)] hover:text-rose-500 p-1.5 rounded transition-colors"
+                            class="text-[color:var(--text-dim)] hover:text-rose-500 p-1.5 rounded transition-colors"
                             aria-label="删除项目">
                             <i class="ri-delete-bin-line"></i>
                         </button>
@@ -92,15 +92,15 @@
                     {% if user %}
                     <div class="user-info-dropdown relative group">
                         <button
-                            class="flex items-center gap-2 text-xs text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"
+                            class="flex items-center gap-2 text-xs text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"
                             aria-label="用户菜单">
                             <i class="ri-user-line"></i>
                             <span class="tabular-nums">{{ user.username or user.email }}</span>
                         </button>
                         <div
-                            class="absolute right-0 top-full mt-2 w-40 bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            class="absolute right-0 top-full mt-2 w-40 bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                             <a href="javascript:void(0)" id="logout-btn-nav" onclick="handleLogoutNav(event)"
-                                class="flex items-center gap-2 p-3 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-sidebar)] hover:text-[var(--text-primary)]">
+                                class="flex items-center gap-2 p-3 text-xs text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-sidebar)] hover:text-[color:var(--text-primary)]">
                                 <i class="ri-logout-box-line"></i> 登出
                             </a>
                         </div>
@@ -108,9 +108,9 @@
                     {% else %}
                     <div class="auth-buttons flex gap-3">
                         <a href="/auth/login-page"
-                            class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] py-1.5 transition-colors">登录</a>
+                            class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] py-1.5 transition-colors">登录</a>
                         <a href="/auth/register-page"
-                            class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors shadow-sm">注册</a>
+                            class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors shadow-sm">注册</a>
                     </div>
                     {% endif %}
                 </div>
@@ -120,64 +120,69 @@
             <div class="workspace-container flex-1 flex overflow-hidden p-6 gap-6 reveal-1">
                 <!-- Prompt Section -->
                 <section
-                    class="prompt-section flex-1 flex flex-col bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-sm">
+                    class="prompt-section flex-1 flex flex-col bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl overflow-hidden shadow-sm">
                     <div
-                        class="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-sidebar)]/50">
-                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">提示词编辑</h3>
+                        class="flex items-center justify-between px-4 py-2.5 border-b border-[color:var(--border-subtle)] bg-[color:var(--bg-sidebar-50)]">
+                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">提示词编辑</h3>
                         <div class="flex gap-2">
                             <button id="open-generate-dialog"
-                                class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
+                                class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
                                 <i class="ri-magic-line"></i> 生成
                             </button>
                             <button id="improve-prompt"
-                                class="bg-[var(--bg-main)] border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] text-[var(--text-secondary)] text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
-                                <i class="ri-sparkling-line text-[var(--accent-primary)]"></i> 优化
+                                class="bg-[color:var(--bg-main)] border border-[color:var(--border-subtle)] hover:border-[color:var(--accent-primary)] text-[color:var(--text-secondary)] text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
+                                <i class="ri-sparkling-line text-[color:var(--accent-primary)]"></i> 优化
                             </button>
                         </div>
                     </div>
 
                     <div class="flex-1 flex flex-col overflow-hidden">
                         <div
-                            class="version-selector px-4 py-2 border-b border-[var(--border-subtle)] flex items-center gap-3 bg-[var(--bg-main)]/50 text-xs text-[var(--text-dim)]">
+                            class="version-selector px-4 py-2 border-b border-[color:var(--border-subtle)] flex items-center gap-3 bg-[color:var(--bg-main-50)] text-xs text-[color:var(--text-dim)]">
                             <span class="font-medium mr-auto">System Prompt</span>
                             <select id="version-select"
-                                class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded text-[11px] px-2 py-1 outline-none hover:border-[var(--accent-primary)]/30 tabular-nums transition-colors text-[var(--text-secondary)]">
+                                class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded text-[11px] px-2 py-1 outline-none hover:border-[color:var(--accent-primary-30)] tabular-nums transition-colors text-[color:var(--text-secondary)]">
                                 <option value="">选择历史版本</option>
                             </select>
                             <span id="current-version"
-                                class="text-[10px] bg-[var(--bg-main)] border border-[var(--border-subtle)] px-1.5 py-0.5 rounded text-[var(--text-dim)] tabular-nums">未生成</span>
+                                class="text-[10px] bg-[color:var(--bg-main)] border border-[color:var(--border-subtle)] px-1.5 py-0.5 rounded text-[color:var(--text-dim)] tabular-nums">未生成</span>
+                            <button id="open-version-dialog"
+                                class="text-[10px] font-bold text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] border border-[color:var(--border-subtle)] hover:border-[color:var(--accent-primary)] rounded px-1.5 py-0.5 transition-colors flex items-center gap-1"
+                                aria-label="打开历史版本面板">
+                                <i class="ri-history-line"></i> 历史
+                            </button>
                         </div>
 
                         <div class="prompt-display-area flex-1 overflow-y-auto p-4 font-mono text-sm leading-relaxed"
                             id="prompt-display">
-                            <div class="h-full flex flex-col items-center justify-center text-[var(--text-dim)] italic">
+                            <div class="h-full flex flex-col items-center justify-center text-[color:var(--text-dim)] italic">
                                 <span>点击上方按钮开始创作</span>
                             </div>
                         </div>
 
                         <div
-                            class="prompt-toolbar px-4 py-2 border-t border-[var(--border-subtle)] flex justify-between items-center bg-[var(--bg-sidebar)]/30">
+                            class="prompt-toolbar px-4 py-2 border-t border-[color:var(--border-subtle)] flex justify-between items-center bg-[color:var(--bg-sidebar-30)]">
                             <button id="edit-prompt"
-                                class="text-[11px] font-bold text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"
+                                class="text-[11px] font-bold text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"
                                 aria-label="直接编辑提示词">直接编辑</button>
                             <button id="copy-prompt"
-                                class="bg-white border border-[var(--border-subtle)] hover:border-[var(--accent-primary)] text-[var(--text-secondary)] text-[11px] font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1.5 shadow-sm"
+                                class="bg-white border border-[color:var(--border-subtle)] hover:border-[color:var(--accent-primary)] text-[color:var(--text-secondary)] text-[11px] font-bold px-3 py-1.5 rounded transition-colors flex items-center gap-1.5 shadow-sm"
                                 aria-label="复制提示词">
                                 <i class="ri-file-copy-line"></i> 复制
                             </button>
                         </div>
                     </div>
 
-                    <div class="px-4 py-3 border-t border-[var(--border-subtle)] bg-[var(--bg-main)]/20">
+                    <div class="px-4 py-3 border-t border-[color:var(--border-subtle)] bg-[color:var(--bg-main-20)]">
                         <div class="group relative" id="user-prompt-container">
                             <label for="user-prompt"
-                                class="block text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)] mb-2">
+                                class="block text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)] mb-2">
                                 User Prompt 模板 (可选)
                             </label>
                             <textarea id="user-prompt"
-                                class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all placeholder:text-[var(--text-dim)]/50 h-20 resize-none shadow-sm font-mono"
+                                class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-lg p-3 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-50)] h-20 resize-none shadow-sm font-mono"
                                 placeholder="使用变量构建模板，如：&#10;这是参考答案：{$KNOWLEDGE}&#10;这是学生作答：{$ANSWER}"></textarea>
-                            <p class="text-[10px] text-[var(--text-dim)] mt-1">
+                            <p class="text-[10px] text-[color:var(--text-dim)] mt-1">
                                 提示：变量值可在右侧"变量值"区域填写文本和图片
                             </p>
                         </div>
@@ -186,20 +191,27 @@
 
                 <!-- Test Section -->
                 <section
-                    class="test-section flex-1 flex flex-col bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl overflow-hidden shadow-sm">
+                    class="test-section flex-1 flex flex-col bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl overflow-hidden shadow-sm">
                     <div
-                        class="flex items-center justify-between px-4 py-2.5 border-b border-[var(--border-subtle)] bg-[var(--bg-sidebar)]/50">
-                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">运行测试</h3>
-                        <button id="run-test"
-                            class="bg-[var(--accent-secondary)] hover:bg-[var(--text-primary)] text-white text-[11px] font-bold px-4 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
-                            <i class="ri-play-line"></i> 运行测试
-                        </button>
+                        class="flex items-center justify-between px-4 py-2.5 border-b border-[color:var(--border-subtle)] bg-[color:var(--bg-sidebar-50)]">
+                        <h3 class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">运行测试</h3>
+                        <div class="flex items-center gap-2">
+                            <button id="ab-toggle"
+                                class="border border-[color:var(--border-subtle)] hover:border-[color:var(--accent-primary)] text-[color:var(--text-secondary)] text-[11px] font-bold px-3 py-1.5 rounded-full transition-colors flex items-center gap-1.5"
+                                aria-label="切换 A/B 对比模式" aria-pressed="false">
+                                <i class="ri-scales-3-line"></i> 对比
+                            </button>
+                            <button id="run-test"
+                                class="bg-[color:var(--accent-secondary)] hover:bg-[color:var(--text-primary)] text-white text-[11px] font-bold px-4 py-1.5 rounded-full transition-colors flex items-center gap-1.5 shadow-sm">
+                                <i class="ri-play-line"></i> 运行测试
+                            </button>
+                        </div>
                     </div>
 
                     <div class="p-4 space-y-5 flex-1 flex flex-col overflow-hidden">
                         <div class="space-y-4">
                             <div class="flex items-center justify-between group">
-                                <h4 class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">变量值
+                                <h4 class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">变量值
                                 </h4>
                             </div>
                             <div id="test-variables" class="space-y-2.5">
@@ -209,27 +221,47 @@
 
                         <div class="space-y-2">
                             <label for="model-select"
-                                class="block text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">模型选择</label>
+                                class="block text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">模型选择</label>
                             <select id="model-select"
-                                class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded p-2 text-sm text-[var(--text-secondary)] outline-none hover:border-[var(--accent-primary)]/30 focus:border-[var(--accent-primary)] transition-colors text-[var(--text-secondary)]">
+                                class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded p-2 text-sm text-[color:var(--text-secondary)] outline-none hover:border-[color:var(--accent-primary-30)] focus:border-[color:var(--accent-primary)] transition-colors text-[color:var(--text-secondary)]">
                                 <!-- Dynamic models -->
+                            </select>
+                            <select id="model-select-b" class="hidden w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded p-2 text-sm text-[color:var(--text-secondary)] outline-none hover:border-[color:var(--accent-primary-30)] focus:border-[color:var(--accent-primary)] transition-colors">
+                                <!-- Dynamic models (B) -->
                             </select>
                         </div>
 
                         <div class="flex-1 flex flex-col overflow-hidden pt-2">
                             <div class="flex items-center justify-between mb-2">
-                                <h3 class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">测试结果
+                                <h3 class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">测试结果
                                 </h3>
                                 <button id="copy-result"
-                                    class="text-[var(--text-dim)] hover:text-[var(--text-primary)] p-1 rounded transition-colors"
+                                    class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] p-1 rounded transition-colors"
                                     aria-label="复制结果">
                                     <i class="ri-file-copy-line"></i>
                                 </button>
                             </div>
-                            <div id="test-result"
-                                class="flex-1 bg-[var(--bg-main)]/30 border border-[var(--border-subtle)] rounded-lg p-4 font-mono text-sm text-[var(--text-secondary)] leading-relaxed overflow-y-auto selection:bg-[var(--accent-primary)]/10">
-                                <div class="h-full flex items-center justify-center text-[var(--text-dim)] italic">
-                                    尚未运行测试</div>
+                            <div id="test-result-wrap" class="flex-1 flex gap-3 overflow-hidden">
+                                <div class="flex-1 flex flex-col overflow-hidden min-w-0">
+                                    <div class="text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-dim)] mb-1">
+                                        A <span id="model-name-a" class="normal-case tracking-normal"></span>
+                                    </div>
+                                    <div id="test-result"
+                                        class="flex-1 bg-[color:var(--bg-main-30)] border border-[color:var(--border-subtle)] rounded-lg p-4 font-mono text-sm text-[color:var(--text-secondary)] leading-relaxed overflow-y-auto selection:bg-[color:var(--accent-primary-10)]">
+                                        <div class="h-full flex items-center justify-center text-[color:var(--text-dim)] italic">
+                                            尚未运行测试</div>
+                                    </div>
+                                </div>
+                                <div id="result-col-b" class="hidden flex-1 flex flex-col overflow-hidden min-w-0">
+                                    <div class="text-[10px] font-bold uppercase tracking-widest text-[color:var(--accent-primary)] mb-1">
+                                        B <span id="model-name-b" class="normal-case tracking-normal"></span>
+                                    </div>
+                                    <div id="test-result-b"
+                                        class="flex-1 bg-[color:var(--bg-main-30)] border border-[color:var(--border-subtle)] rounded-lg p-4 font-mono text-sm text-[color:var(--text-secondary)] leading-relaxed overflow-y-auto selection:bg-[color:var(--accent-primary-10)]">
+                                        <div class="h-full flex items-center justify-center text-[color:var(--text-dim)] italic">
+                                            尚未运行测试</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -241,14 +273,14 @@
     <!-- Dialogs -->
     <!-- Generate Dialog -->
     <div id="generate-dialog"
-        class="fixed inset-0 bg-[var(--text-primary)]/20 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div
-            class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90dvh] flex flex-col">
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90dvh] flex flex-col">
             <div
-                class="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-sidebar)]/30">
-                <h3 class="text-lg font-bold text-[var(--text-primary)] brand-font">生成提示词</h3>
+                class="px-6 py-4 border-b border-[color:var(--border-subtle)] flex items-center justify-between bg-[color:var(--bg-sidebar-30)]">
+                <h3 class="text-lg font-bold text-[color:var(--text-primary)] brand-font">生成提示词</h3>
                 <button id="dlg-cancel-generate"
-                    class="text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"
+                    class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"
                     aria-label="关闭对话框">
                     <i class="ri-close-line text-2xl"></i>
                 </button>
@@ -258,22 +290,22 @@
                 <div id="dlg-input-section" class="space-y-6">
                     <div class="space-y-2">
                         <label for="dlg-task-description"
-                            class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">任务描述</label>
+                            class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">任务描述</label>
                         <textarea id="dlg-task-description"
-                            class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] h-60 focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all placeholder:text-[var(--text-dim)]/40 shadow-sm"
+                            class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] h-60 focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-40)] shadow-sm"
                             placeholder="例如：为评审写一个结构化评审模版..."></textarea>
                     </div>
                     <div class="space-y-2">
                         <label for="dlg-variables"
-                            class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">变量
+                            class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">变量
                             (用逗号分隔)</label>
                         <input id="dlg-variables" type="text"
-                            class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all placeholder:text-[var(--text-dim)]/40 shadow-sm"
+                            class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-40)] shadow-sm"
                             placeholder="例如：SCENARIO, CUSTOMER_NAME">
                     </div>
                     <div class="flex justify-end gap-3 pt-4">
                         <button id="dlg-start-generate"
-                            class="w-full bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[var(--accent-primary)]/20 flex items-center justify-center gap-2 group">
+                            class="w-full bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[color:var(--accent-primary-20)] flex items-center justify-center gap-2 group">
                             <i class="ri-magic-line group-hover:rotate-12 transition-transform"></i> 开始生成
                         </button>
                     </div>
@@ -281,18 +313,18 @@
                 <!-- Preview Page -->
                 <div id="dlg-preview-section" class="hidden space-y-4">
                     <div id="dlg-output"
-                        class="bg-[var(--bg-main)]/50 border border-[var(--border-subtle)] rounded-xl p-5 font-mono text-sm text-[var(--text-secondary)] min-h-[400px] overflow-auto leading-relaxed shadow-inner whitespace-pre-wrap break-words">
+                        class="bg-[color:var(--bg-main-50)] border border-[color:var(--border-subtle)] rounded-xl p-5 font-mono text-sm text-[color:var(--text-secondary)] min-h-[400px] overflow-auto leading-relaxed shadow-inner whitespace-pre-wrap break-words">
                     </div>
                     <div id="dlg-variables-preview"
-                        class="hidden border border-[var(--border-subtle)] border-dashed rounded-lg p-3 bg-[var(--bg-main)]/50">
-                        <span class="text-[10px] uppercase font-bold text-[var(--text-dim)] mb-2 block">捕获的变量</span>
+                        class="hidden border border-[color:var(--border-subtle)] border-dashed rounded-lg p-3 bg-[color:var(--bg-main-50)]">
+                        <span class="text-[10px] uppercase font-bold text-[color:var(--text-dim)] mb-2 block">捕获的变量</span>
                         <div id="dlg-variables-tags" class="flex flex-wrap gap-2"></div>
                     </div>
                     <div class="flex justify-end gap-3 pt-2">
                         <button id="dlg-back-edit"
-                            class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] py-2 transition-colors">返回修改</button>
+                            class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] py-2 transition-colors">返回修改</button>
                         <button id="dlg-apply-system"
-                            class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] disabled:bg-[var(--bg-main)] disabled:text-[var(--text-dim)] text-white text-sm font-medium px-6 py-2 rounded-full transition-colors shadow-sm"
+                            class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] disabled:bg-[color:var(--bg-main)] disabled:text-[color:var(--text-dim)] text-white text-sm font-medium px-6 py-2 rounded-full transition-colors shadow-sm"
                             disabled>应用到 System Prompt</button>
                     </div>
                 </div>
@@ -302,14 +334,14 @@
 
     <!-- Improve Dialog -->
     <div id="improve-dialog"
-        class="fixed inset-0 bg-[var(--text-primary)]/20 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
         <div
-            class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90dvh] flex flex-col">
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90dvh] flex flex-col">
             <div
-                class="px-6 py-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-sidebar)]/30">
-                <h3 class="text-lg font-bold text-[var(--text-primary)] brand-font">优化提示词</h3>
+                class="px-6 py-4 border-b border-[color:var(--border-subtle)] flex items-center justify-between bg-[color:var(--bg-sidebar-30)]">
+                <h3 class="text-lg font-bold text-[color:var(--text-primary)] brand-font">优化提示词</h3>
                 <button id="cancel-improve"
-                    class="text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors"
+                    class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"
                     aria-label="关闭对话框">
                     <i class="ri-close-line text-2xl"></i>
                 </button>
@@ -318,37 +350,37 @@
                 <div id="improve-input-section" class="space-y-6">
                     <div class="space-y-2">
                         <label for="improve-instructions"
-                            class="text-[11px] font-bold uppercase tracking-widest text-[var(--text-dim)]">优化说明</label>
+                            class="text-[11px] font-bold uppercase tracking-widest text-[color:var(--text-dim)]">优化说明</label>
                         <textarea id="improve-instructions"
-                            class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] h-32 focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all placeholder:text-[var(--text-dim)]/40 shadow-sm"
+                            class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] h-32 focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all placeholder:text-[color:var(--text-dim-40)] shadow-sm"
                             placeholder="描述你想要如何优化，例如：改进结构、增加具体案例..."></textarea>
                     </div>
                     <div class="flex justify-end pt-2">
                         <button id="start-improve"
-                            class="w-full bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white font-bold py-4 rounded-xl shadow-lg shadow-[var(--accent-primary)]/20 transition-all">执行优化</button>
+                            class="w-full bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white font-bold py-4 rounded-xl shadow-lg shadow-[color:var(--accent-primary-20)] transition-all">执行优化</button>
                     </div>
                 </div>
 
                 <div id="improve-loading-section" class="hidden py-20 flex flex-col items-center justify-center gap-4">
                     <div
-                        class="w-10 h-10 border-2 border-[var(--accent-primary)]/20 border-t-[var(--accent-primary)] rounded-full animate-spin">
+                        class="w-10 h-10 border-2 border-[color:var(--accent-primary-20)] border-t-[color:var(--accent-primary)] rounded-full animate-spin">
                     </div>
-                    <p class="text-sm text-[var(--text-dim)]">AI 正在深度优化提示词结构...</p>
+                    <p class="text-sm text-[color:var(--text-dim)]">AI 正在深度优化提示词结构...</p>
                 </div>
 
                 <div id="improvement-result-section" class="hidden space-y-4">
-                    <div class="flex border-b border-[var(--border-subtle)] bg-[var(--bg-main)]/30 px-2">
+                    <div class="flex border-b border-[color:var(--border-subtle)] bg-[color:var(--bg-main-30)] px-2">
                         <button id="tab-improve-plan"
-                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--text-primary)] border-b-2 border-transparent transition-all tab-button">规划</button>
+                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] border-b-2 border-transparent transition-all tab-button">规划</button>
                         <button id="tab-improve-prompt"
-                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--text-primary)] border-b-2 border-transparent transition-all tab-button">初稿</button>
+                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] border-b-2 border-transparent transition-all tab-button">初稿</button>
                         <button id="tab-revise-plan"
-                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-dim)] hover:text-[var(--text-primary)] border-b-2 border-transparent transition-all tab-button">分析</button>
+                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] border-b-2 border-transparent transition-all tab-button">分析</button>
                         <button id="tab-revise-prompt"
-                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[var(--text-primary)] border-b-2 border-[var(--accent-primary)] transition-all tab-button active">定稿</button>
+                            class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-[color:var(--text-primary)] border-b-2 border-[color:var(--accent-primary)] transition-all tab-button active">定稿</button>
                     </div>
                     <div
-                        class="bg-[var(--bg-main)]/50 border border-[var(--border-subtle)] rounded-xl p-5 font-mono text-sm text-[var(--text-secondary)] min-h-[300px] max-h-[400px] overflow-auto leading-relaxed shadow-inner">
+                        class="bg-[color:var(--bg-main-50)] border border-[color:var(--border-subtle)] rounded-xl p-5 font-mono text-sm text-[color:var(--text-secondary)] min-h-[300px] max-h-[400px] overflow-auto leading-relaxed shadow-inner">
                         <div id="improve-plan-page" class="hidden whitespace-pre-wrap"></div>
                         <div id="improve-prompt-page" class="hidden"></div>
                         <div id="revise-plan-page" class="hidden whitespace-pre-wrap"></div>
@@ -356,9 +388,9 @@
                     </div>
                     <div class="flex justify-end gap-3 pt-2">
                         <button id="back-to-input"
-                            class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] py-2 transition-colors">返回修改</button>
+                            class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] py-2 transition-colors">返回修改</button>
                         <button id="save-as-version"
-                            class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-sm font-medium px-6 py-2 rounded-full transition-colors shadow-sm">保存结果</button>
+                            class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-sm font-medium px-6 py-2 rounded-full transition-colors shadow-sm">保存结果</button>
                     </div>
                 </div>
             </div>
@@ -367,59 +399,86 @@
 
     <!-- Modals -->
     <div id="project-dialog"
-        class="fixed inset-0 bg-[var(--text-primary)]/20 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
         <div
-            class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
-            <h3 class="text-xl font-bold text-[var(--text-primary)] brand-font">创建新项目</h3>
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
+            <h3 class="text-xl font-bold text-[color:var(--text-primary)] brand-font">创建新项目</h3>
             <div class="space-y-2">
                 <label for="project-name"
-                    class="text-[11px] font-bold text-[var(--text-dim)] uppercase tracking-widest">项目名称</label>
+                    class="text-[11px] font-bold text-[color:var(--text-dim)] uppercase tracking-widest">项目名称</label>
                 <input type="text" id="project-name"
-                    class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] outline-none transition-all shadow-sm"
+                    class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] outline-none transition-all shadow-sm"
                     placeholder="例如：智能翻译、代码评审...">
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button id="cancel-project-btn"
-                    class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] px-4 py-2 transition-colors">取消</button>
+                    class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] px-4 py-2 transition-colors">取消</button>
                 <button id="create-project-btn"
-                    class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm">创建项目</button>
+                    class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm">创建项目</button>
             </div>
         </div>
     </div>
 
     <!-- Rename Dialog -->
     <div id="rename-dialog"
-        class="fixed inset-0 bg-[var(--text-primary)]/20 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
         <div
-            class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
-            <h3 class="text-xl font-bold text-[var(--text-primary)] brand-font">重命名项目</h3>
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
+            <h3 class="text-xl font-bold text-[color:var(--text-primary)] brand-font">重命名项目</h3>
             <div class="space-y-2">
                 <label for="new-project-name"
-                    class="text-[11px] font-bold text-[var(--text-dim)] uppercase tracking-widest">新名称</label>
+                    class="text-[11px] font-bold text-[color:var(--text-dim)] uppercase tracking-widest">新名称</label>
                 <input type="text" id="new-project-name"
-                    class="w-full bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] outline-none transition-all shadow-sm">
+                    class="w-full bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] outline-none transition-all shadow-sm">
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button id="cancel-rename-btn"
-                    class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] px-4 py-2 transition-colors">取消</button>
+                    class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] px-4 py-2 transition-colors">取消</button>
                 <button id="confirm-rename-btn"
-                    class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm">保存修改</button>
+                    class="bg-[color:var(--accent-primary)] hover:bg-[color:var(--accent-hover)] text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm">保存修改</button>
             </div>
         </div>
     </div>
 
     <!-- Delete Dialog -->
     <div id="delete-dialog"
-        class="fixed inset-0 bg-[var(--text-primary)]/20 z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] z-[110] hidden items-center justify-center p-4 backdrop-blur-sm">
         <div
-            class="bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-md w-full p-8 space-y-6">
             <h3 class="text-xl font-bold text-rose-600 brand-font">删除项目</h3>
-            <p class="text-sm text-[var(--text-secondary)] leading-relaxed">确定要删除该项目吗？此操作将永久移除所有关联的提示词版本，且无法撤销。</p>
+            <p class="text-sm text-[color:var(--text-secondary)] leading-relaxed">确定要删除该项目吗？此操作将永久移除所有关联的提示词版本，且无法撤销。</p>
             <div class="flex justify-end gap-3 pt-4">
                 <button id="cancel-delete-btn"
-                    class="text-xs font-medium text-[var(--text-dim)] hover:text-[var(--text-primary)] px-4 py-2 transition-colors">取消</button>
+                    class="text-xs font-medium text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] px-4 py-2 transition-colors">取消</button>
                 <button id="confirm-delete-btn"
                     class="bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold px-6 py-2.5 rounded-full transition-colors shadow-sm">确定删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Version History Dialog -->
+    <div id="version-dialog"
+        class="fixed inset-0 bg-[color:var(--text-primary-20)] backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div
+            class="bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85dvh] flex flex-col">
+            <div
+                class="px-6 py-4 border-b border-[color:var(--border-subtle)] flex items-center justify-between bg-[color:var(--bg-sidebar-30)]">
+                <h3 class="text-lg font-bold text-[color:var(--text-primary)] brand-font">历史版本</h3>
+                <button id="version-dialog-close"
+                    class="text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors"
+                    aria-label="关闭历史版本面板">
+                    <i class="ri-close-line text-2xl"></i>
+                </button>
+            </div>
+            <div class="flex flex-1 overflow-hidden">
+                <div id="version-list" class="w-60 border-r border-[color:var(--border-subtle)] overflow-y-auto p-2 space-y-1 shrink-0">
+                    <!-- 版本列表（由 main.js 填充） -->
+                </div>
+                <div id="version-diff" class="flex-1 overflow-auto p-5 font-mono text-xs leading-relaxed">
+                    <div class="h-full flex items-center justify-center text-[color:var(--text-dim)] italic">
+                        选择左侧「对比」查看与当前版本的差异
+                    </div>
+                </div>
             </div>
         </div>
     </div>

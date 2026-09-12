@@ -79,6 +79,14 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.removeChild(textarea);
     }
 
+    // 高亮提示词中的变量标记（{$VAR} / {{VAR}} / ${VAR}），输入须已通过 escapeHtml 转义
+    function highlightVariables(escapedText) {
+        return escapedText.replace(
+            /(\{\$[\u4e00-\u9fa5A-Za-z0-9_]+\}|\{\{[\u4e00-\u9fa5A-Za-z0-9_]+\}\}|\$\{[\u4e00-\u9fa5A-Za-z0-9_]+\})/g,
+            '<span class="var-token">$1</span>'
+        );
+    }
+
     // 获取DOM元素
     const taskDescription = document.querySelector("#task-description");
     // 变量输入功能已移至生成提示词弹窗中
@@ -94,6 +102,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const runTestBtn = document.querySelector("#run-test");
     const testResult = document.querySelector("#test-result");
     const copyResultBtn = document.querySelector("#copy-result");
+
+    // A/B 对比测试相关元素
+    const abToggleBtn = document.querySelector("#ab-toggle");
+    const modelSelectA = document.querySelector("#model-select");
+    const modelSelectB = document.querySelector("#model-select-b");
+    const resultColB = document.querySelector("#result-col-b");
+    const modelNameA = document.querySelector("#model-name-a");
+    const modelNameB = document.querySelector("#model-name-b");
+    const testResultB = document.querySelector("#test-result-b");
+    let abCompareMode = false;
+
+    // 历史版本面板相关元素
+    const openVersionDialogBtn = document.querySelector("#open-version-dialog");
+    const versionDialog = document.querySelector("#version-dialog");
+    const versionDialogCloseBtn = document.querySelector("#version-dialog-close");
+    const versionListEl = document.querySelector("#version-list");
+    const versionDiffEl = document.querySelector("#version-diff");
+    let currentVersionList = [];
 
     // 新增：System/User Prompt 与生成对话框相关元素
     const systemPromptEl = document.querySelector('#system-prompt');
@@ -270,6 +296,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 modelSelect.appendChild(option);
             });
 
+            // A/B 对比模式的 B 模型下拉：与 A 同源填充，默认选中不同模型
+            const modelSelectB = document.querySelector("#model-select-b");
+            if (modelSelectB) {
+                modelSelectB.innerHTML = modelSelect.innerHTML;
+                if (data.models.length > 1) {
+                    modelSelectB.selectedIndex = 1;
+                }
+            }
+
             console.log("模型列表加载完成");
         } catch (error) {
             console.error("加载模型列表失败:", error);
@@ -396,6 +431,29 @@ document.addEventListener("DOMContentLoaded", function () {
         // 版本选择下拉菜单
         if (versionSelect) {
             versionSelect.addEventListener("change", handleVersionChange);
+        }
+
+        // 历史版本面板
+        if (openVersionDialogBtn) {
+            openVersionDialogBtn.addEventListener("click", showVersionDialog);
+        }
+        if (versionDialogCloseBtn) {
+            versionDialogCloseBtn.addEventListener("click", hideVersionDialog);
+        }
+
+        // A/B 对比模式切换
+        if (abToggleBtn) {
+            abToggleBtn.addEventListener("click", () => {
+                abCompareMode = !abCompareMode;
+                abToggleBtn.setAttribute("aria-pressed", String(abCompareMode));
+                abToggleBtn.classList.toggle("text-[color:var(--accent-primary)]", abCompareMode);
+                abToggleBtn.classList.toggle("border-[color:var(--accent-primary)]", abCompareMode);
+                if (modelSelectB) modelSelectB.classList.toggle("hidden", !abCompareMode);
+                if (resultColB) resultColB.classList.toggle("hidden", !abCompareMode);
+                if (abCompareMode) {
+                    showNotification("已开启对比模式：为 B 选择另一个模型后运行测试", "success");
+                }
+            });
         }
 
         // 复制提示词按钮
@@ -760,7 +818,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // 更新版本列表与当前显示
             await loadProjectPrompts(currentProjectId);
             currentPrompt = prompt;
-            if (promptDisplay) promptDisplay.innerHTML = `<pre>${escapeHtml(prompt)}</pre>`;
+            if (promptDisplay) promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(prompt))}</pre>`;
             showNotification('已保存为新版本', 'success');
         } catch (e) {
             console.error('保存失败:', e);
@@ -853,7 +911,11 @@ document.addEventListener("DOMContentLoaded", function () {
     async function handleVersionChange(event) {
         const versionId = event.target.value;
         if (!versionId) return;
+        await loadVersionContent(versionId);
+    }
 
+    // 加载指定历史版本并展示（版本下拉与历史版本面板共用）
+    async function loadVersionContent(versionId) {
         try {
             // 显示加载状态
             promptDisplay.innerHTML = '<div class="loading">正在加载版本内容...</div>';
@@ -905,6 +967,123 @@ document.addEventListener("DOMContentLoaded", function () {
             showNotification("加载版本内容失败: " + error.message, "error");
             promptDisplay.innerHTML = '<div class="error">加载版本内容失败</div>';
         }
+    }
+
+    // ===== 历史版本面板 =====
+    function showVersionDialog() {
+        if (!currentVersionList.length) {
+            showNotification("当前项目还没有历史版本", "warning");
+            return;
+        }
+        renderVersionList();
+        versionDiffEl.innerHTML =
+            '<div class="h-full flex items-center justify-center text-[color:var(--text-dim)] italic">选择左侧「对比」查看与当前版本的差异</div>';
+        versionDialog.classList.remove('hidden');
+        versionDialog.classList.add('flex');
+    }
+
+    function hideVersionDialog() {
+        versionDialog.classList.add('hidden');
+        versionDialog.classList.remove('flex');
+    }
+
+    function renderVersionList() {
+        versionListEl.innerHTML = '';
+        currentVersionList.forEach(prompt => {
+            const row = document.createElement('div');
+            row.className = 'group flex items-center gap-1 px-2 py-2 rounded-lg border border-transparent hover:border-[color:var(--border-subtle)] hover:bg-[color:var(--bg-sidebar-50)] transition-colors';
+            row.innerHTML = `
+                <div class="flex-1 min-w-0">
+                    <div class="text-xs font-bold text-[color:var(--text-primary)] tabular-nums">v${prompt.version ?? '?'}</div>
+                    <div class="text-[10px] text-[color:var(--text-dim)] tabular-nums truncate">${formatDate(prompt.created_at)}</div>
+                </div>
+                <button data-act="view" class="text-[10px] font-bold text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] px-1.5 py-1 rounded transition-colors" title="查看此版本">查看</button>
+                <button data-act="diff" class="text-[10px] font-bold text-[color:var(--text-dim)] hover:text-[color:var(--accent-primary)] px-1.5 py-1 rounded transition-colors" title="与当前版本对比">对比</button>
+            `;
+            row.querySelector('[data-act="view"]').addEventListener('click', async () => {
+                await loadVersionContent(prompt.id);
+                hideVersionDialog();
+            });
+            row.querySelector('[data-act="diff"]').addEventListener('click', () => renderVersionDiff(prompt));
+            versionListEl.appendChild(row);
+        });
+    }
+
+    // 拉取某历史版本内容，与当前展示的提示词做逐行差异对比
+    async function renderVersionDiff(prompt) {
+        versionDiffEl.innerHTML = '<div class="loading">正在计算差异...</div>';
+        try {
+            const response = await fetch(`${baseUrl}/api/projects/${currentProjectId}/prompts/${prompt.id}`, {
+                headers: { ...getAuthHeaders() },
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            const result = await response.json();
+            if (!result.success || !result.data) {
+                throw new Error(result.message || "获取版本内容失败");
+            }
+            const versionContent = result.data.system_prompt || result.data.content || '';
+            const rows = diffLines(currentPrompt || '', versionContent);
+            const added = rows.filter(r => r.type === '+').length;
+            const removed = rows.filter(r => r.type === '-').length;
+
+            const header = `<div class="text-[11px] font-sans mb-3 text-[color:var(--text-dim)]">
+                v${prompt.version ?? '?'} 与当前版本对比：
+                <span class="text-emerald-600 font-bold">+${added}</span> 行 /
+                <span class="text-rose-600 font-bold">-${removed}</span> 行
+            </div>`;
+            const body = rows.map(r => {
+                const cls = r.type === '+' ? 'diff-add' : r.type === '-' ? 'diff-del' : 'diff-same';
+                const sign = r.type === '+' ? '+' : r.type === '-' ? '−' : ' ';
+                const text = escapeHtml(r.text) || '&nbsp;';
+                return `<div class="${cls}"><span class="diff-sign">${sign}</span>${text}</div>`;
+            }).join('');
+            versionDiffEl.innerHTML = header + body;
+        } catch (error) {
+            console.error("版本对比失败:", error);
+            versionDiffEl.innerHTML = `<div class="text-rose-600 text-xs">对比失败: ${escapeHtml(error.message)}</div>`;
+        }
+    }
+
+    // 逐行 LCS 差异（纯前端实现，行数过大时退化为全量标记）
+    function diffLines(oldText, newText) {
+        const a = (oldText || '').split('\n');
+        const b = (newText || '').split('\n');
+        const n = a.length, m = b.length;
+
+        if (n * m > 4000000) {
+            return [
+                ...a.map(t => ({ type: '-', text: t })),
+                ...b.map(t => ({ type: '+', text: t }))
+            ];
+        }
+
+        const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+        for (let i = n - 1; i >= 0; i--) {
+            for (let j = m - 1; j >= 0; j--) {
+                dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+            }
+        }
+
+        const rows = [];
+        let i = 0, j = 0;
+        while (i < n && j < m) {
+            if (a[i] === b[j]) {
+                rows.push({ type: ' ', text: a[i] });
+                i++; j++;
+            } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+                rows.push({ type: '-', text: a[i] });
+                i++;
+            } else {
+                rows.push({ type: '+', text: b[j] });
+                j++;
+            }
+        }
+        while (i < n) rows.push({ type: '-', text: a[i++] });
+        while (j < m) rows.push({ type: '+', text: b[j++] });
+        return rows;
     }
 
     // 显示项目创建对话框
@@ -1085,11 +1264,11 @@ document.addEventListener("DOMContentLoaded", function () {
             projects.forEach(project => {
                 const isActive = project.id === currentProjectId;
                 const projectItem = document.createElement('div');
-                projectItem.className = `project-item group flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 ${isActive ? 'bg-[var(--bg-main)] shadow-sm text-[var(--accent-primary)] font-bold' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-main)]/50'}`;
+                projectItem.className = `project-item group flex items-center justify-between px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 ${isActive ? 'bg-[color:var(--bg-main)] shadow-sm text-[color:var(--accent-primary)] font-bold' : 'text-[color:var(--text-secondary)] hover:bg-[color:var(--bg-main-50)]'}`;
                 projectItem.dataset.projectId = project.id;
                 projectItem.innerHTML = `
                     <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                        <i class="ri-folder-3-line ${isActive ? 'text-[var(--accent-primary)]' : 'text-[var(--text-dim)]'} transition-colors"></i>
+                        <i class="ri-folder-3-line ${isActive ? 'text-[color:var(--accent-primary)]' : 'text-[color:var(--text-dim)]'} transition-colors"></i>
                         <span class="project-name text-xs truncate">${escapeHtml(project.name)}</span>
                     </div>
                     <div class="project-actions flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
@@ -1194,16 +1373,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const isActive = item.dataset.projectId === projectId;
 
             if (isActive) {
-                item.classList.add("bg-[var(--bg-main)]", "shadow-sm", "text-[var(--accent-primary)]", "font-bold", "active");
+                item.classList.add("bg-[color:var(--bg-main)]", "shadow-sm", "text-[color:var(--accent-primary)]", "font-bold", "active");
                 if (icon) {
-                    icon.classList.remove("text-[var(--text-dim)]");
-                    icon.classList.add("text-[var(--accent-primary)]");
+                    icon.classList.remove("text-[color:var(--text-dim)]");
+                    icon.classList.add("text-[color:var(--accent-primary)]");
                 }
             } else {
-                item.classList.remove("bg-[var(--bg-main)]", "shadow-sm", "text-[var(--accent-primary)]", "font-bold", "active");
+                item.classList.remove("bg-[color:var(--bg-main)]", "shadow-sm", "text-[color:var(--accent-primary)]", "font-bold", "active");
                 if (icon) {
-                    icon.classList.remove("text-[var(--accent-primary)]");
-                    icon.classList.add("text-[var(--text-dim)]");
+                    icon.classList.remove("text-[color:var(--accent-primary)]");
+                    icon.classList.add("text-[color:var(--text-dim)]");
                 }
             }
         });
@@ -1415,6 +1594,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateVersionSelector(prompts) {
         console.log("更新版本选择器，提示词数量:", prompts.length);
 
+        // 供历史版本面板使用
+        currentVersionList = Array.isArray(prompts) ? prompts : [];
+
         // 记住当前选中的值
         const currentSelectedId = versionSelect.value;
 
@@ -1526,7 +1708,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // 更新 System Prompt 显示
-        promptDisplay.innerHTML = `<pre>${escapeHtml(content)}</pre>`;
+        promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(content))}</pre>`;
         promptDisplay.classList.add('has-content');
 
         // 更新 User Prompt 模板（如果有保存的 user_prompt）
@@ -1663,17 +1845,17 @@ document.addEventListener("DOMContentLoaded", function () {
             const hasImages = existingValue.images && existingValue.images.length > 0;
             
             const variableRow = document.createElement("div");
-            variableRow.className = "variable-row group bg-[var(--bg-surface)] border border-[var(--border-subtle)] rounded-lg p-3 mb-3";
+            variableRow.className = "variable-row group bg-[color:var(--bg-surface)] border border-[color:var(--border-subtle)] rounded-lg p-3 mb-3";
             variableRow.innerHTML = `
                 <div class="flex items-center justify-between mb-2">
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-[var(--accent-primary)]">\${${variable}}</div>
-                    <label class="cursor-pointer text-[var(--text-dim)] hover:text-[var(--accent-primary)] transition-colors flex items-center gap-1 text-xs">
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-[color:var(--accent-primary)]">\${${variable}}</div>
+                    <label class="cursor-pointer text-[color:var(--text-dim)] hover:text-[color:var(--accent-primary)] transition-colors flex items-center gap-1 text-xs">
                         <i class="ri-image-add-line"></i>
                         <span>添加图片</span>
                         <input type="file" class="variable-image-input hidden" accept="image/*" multiple data-var="${variable}">
                     </label>
                 </div>
-                <textarea class="w-full bg-white border border-[var(--border-subtle)] rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all variable-input placeholder:text-[var(--text-dim)]/40 shadow-sm resize-none" 
+                <textarea class="w-full bg-white border border-[color:var(--border-subtle)] rounded-lg px-3 py-2 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all variable-input placeholder:text-[color:var(--text-dim-40)] shadow-sm resize-none" 
                     data-var="${variable}" 
                     rows="2"
                     placeholder="输入 ${variable} 的文本内容...">${escapeHtml(existingValue.text || '')}</textarea>
@@ -1751,7 +1933,7 @@ document.addEventListener("DOMContentLoaded", function () {
         previewEl.classList.remove('hidden');
         previewEl.innerHTML = images.map((base64, imgIndex) => `
             <div class="relative group">
-                <img src="${base64}" alt="图片" class="w-14 h-14 object-cover rounded-lg border border-[var(--border-subtle)]">
+                <img src="${base64}" alt="图片" class="w-14 h-14 object-cover rounded-lg border border-[color:var(--border-subtle)]">
                 <button type="button" class="remove-var-image absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     data-var="${varName}" data-img-index="${imgIndex}">
                     <i class="ri-close-line"></i>
@@ -1870,7 +2052,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const m = fallbackText.match(/<Instructions>([\s\S]*?)<\/Instructions>/i);
                     promptText = m ? m[1] : fallbackText;
                 }
-                promptDisplay.innerHTML = `<pre>${escapeHtml(promptText)}</pre>`;
+                promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(promptText))}</pre>`;
                 return { final: { prompt: promptText, variables: extractVariablesFromContent(promptText), version: 0, id: '' }, raw: promptText };
             } catch (e) {
                 throw new Error('非SSE回退解析失败');
@@ -1988,7 +2170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         const resolved = resolveStreamedPrompt(payload, accumulated);
                         if (resolved.prompt) {
                             console.log('更新显示为提取后的内容，长度:', resolved.prompt.length);
-                            promptDisplay.innerHTML = `<pre>${escapeHtml(resolved.prompt)}</pre>`;
+                            promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(resolved.prompt))}</pre>`;
                         }
                         return { final: resolved, raw: accumulated };
                     } catch (e) {
@@ -2008,7 +2190,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             if (fragment) {
                                 accumulated += fragment;
                                 console.log('更新显示(仅Instructions内)，当前累积长度:', accumulated.length, '增量片段长度:', fragment.length);
-                                promptDisplay.innerHTML = `<pre>${escapeHtml(accumulated)}</pre>`;
+                                promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(accumulated))}</pre>`;
                             }
                         }
                     } catch (e) {
@@ -2030,7 +2212,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (ev.done) {
                     const resolved = resolveStreamedPrompt(ev.payload, accumulated);
                     if (resolved.prompt) {
-                        promptDisplay.innerHTML = `<pre>${escapeHtml(resolved.prompt)}</pre>`;
+                        promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(resolved.prompt))}</pre>`;
                     }
                     return { final: resolved, raw: accumulated };
                 }
@@ -2248,62 +2430,80 @@ document.addEventListener("DOMContentLoaded", function () {
             testPrompt = testPrompt.replace(regex, varData.text || `{$${variable}}`);
         }
 
-        // 获取选中的模型
-        const modelSelect = document.querySelector("#model-select");
-        const model = modelSelect ? modelSelect.value : "deepseek-v3-huoshan";
-
-        // 获取 User Prompt 模板
+        // 构建 User 消息内容（A/B 共用）
         const userPromptTemplate = userPromptEl ? userPromptEl.value.trim() : '';
+        let userContent = [];
+        if (userPromptTemplate) {
+            userContent = buildUserContentFromTemplate(userPromptTemplate, variableValuesWithMedia);
+        } else {
+            // 没有模板时，直接将所有变量值按顺序拼接
+            for (const [varName, varData] of Object.entries(variableValuesWithMedia)) {
+                if (varData.text && varData.text.trim()) {
+                    userContent.push({ type: "text", text: varData.text });
+                }
+                if (varData.images && varData.images.length > 0) {
+                    for (const imgBase64 of varData.images) {
+                        userContent.push({ type: "image_url", image_url: { url: imgBase64 } });
+                    }
+                }
+            }
+        }
 
-        try {
-            // 显示加载状态
-            testResult.innerHTML = '<div class="loading-pulse">正在测试中...</div>';
-
-            // 构建请求体
+        const buildRequestBody = (model) => {
             const requestBody = {
                 system_prompt: testPrompt,
                 model: model,
                 max_tokens: 4096,
                 project_id: currentProjectId
             };
-            
-            // 构建 User 消息内容
-            let userContent = [];
-            
-            // 如果有 User Prompt 模板，解析并构建多模态内容
-            if (userPromptTemplate) {
-                userContent = buildUserContentFromTemplate(userPromptTemplate, variableValuesWithMedia);
-            } else {
-                // 没有模板时，直接将所有变量值按顺序拼接
-                for (const [varName, varData] of Object.entries(variableValuesWithMedia)) {
-                    if (varData.text && varData.text.trim()) {
-                        userContent.push({ type: "text", text: varData.text });
-                    }
-                    if (varData.images && varData.images.length > 0) {
-                        for (const imgBase64 of varData.images) {
-                            userContent.push({ type: "image_url", image_url: { url: imgBase64 } });
-                        }
-                    }
-                }
-            }
-            
-            console.log("[DEBUG] userPromptTemplate:", userPromptTemplate);
-            console.log("[DEBUG] variableValuesWithMedia:", variableValuesWithMedia);
-            console.log("[DEBUG] 构建的 userContent:", userContent);
-            
             if (userContent.length > 0) {
                 requestBody.user_messages = [{ content: userContent }];
             }
-            
-            // 调试日志：打印完整请求体
-            console.log("[DEBUG] 发送请求体:", JSON.stringify(requestBody, (key, value) => {
-                // 截断 base64 图片数据
-                if (typeof value === 'string' && value.startsWith('data:image')) {
-                    return value.substring(0, 50) + '...[base64 truncated]';
-                }
-                return value;
-            }, 2));
-            
+            return requestBody;
+        };
+
+        const modelA = modelSelectA && modelSelectA.value ? modelSelectA.value : "deepseek-v3-huoshan";
+        if (modelNameA) modelNameA.textContent = `\u00b7 ${modelA}`;
+
+        // 单模型模式
+        if (!abCompareMode) {
+            try {
+                await runTestStream(buildRequestBody(modelA), testResult);
+                showNotification("测试完成", "success");
+            } catch (error) {
+                console.error("测试失败:", error);
+                showNotification("测试失败: " + error.message, "error");
+            }
+            return;
+        }
+
+        // A/B 对比模式：两个模型并行流式输出
+        const modelB = modelSelectB && modelSelectB.value ? modelSelectB.value : "";
+        if (!modelB) {
+            showNotification("对比模式需要为 B 选择一个模型", "warning");
+            return;
+        }
+        if (modelNameB) modelNameB.textContent = `\u00b7 ${modelB}`;
+
+        const results = await Promise.allSettled([
+            runTestStream(buildRequestBody(modelA), testResult),
+            runTestStream(buildRequestBody(modelB), testResultB)
+        ]);
+        const failed = results.filter(r => r.status === "rejected").length;
+        if (failed === results.length) {
+            showNotification("A/B 测试失败", "error");
+        } else if (failed > 0) {
+            showNotification("A/B 测试部分失败", "warning");
+        } else {
+            showNotification("A/B 测试完成", "success");
+        }
+    }
+
+    // 执行单列测试的流式请求（A/B 两列共用），失败时 reject 并在对应列内提示
+    async function runTestStream(requestBody, resultEl) {
+        try {
+            resultEl.innerHTML = '<div class="loading-pulse">正在测试中...</div>';
+
             const resp = await fetch(`${baseUrl}/test/stream`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
@@ -2319,8 +2519,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             if (!contentType.includes('text/event-stream') || !resp.body) {
                 const fallback = await resp.json();
-                testResult.innerHTML = `<pre>${escapeHtml(fallback.result || '')}</pre>`;
-                showNotification("测试完成", "success");
+                resultEl.innerHTML = `<pre>${escapeHtml(fallback.result || '')}</pre>`;
                 return;
             }
 
@@ -2328,8 +2527,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const decoder = new TextDecoder('utf-8');
             let buffer = '';
             let acc = '';
-            testResult.innerHTML = '<pre></pre>';
-            const pre = testResult.querySelector('pre');
+            resultEl.innerHTML = '<pre></pre>';
+            const pre = resultEl.querySelector('pre');
 
             while (true) {
                 const { value, done } = await reader.read();
@@ -2358,11 +2557,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                 }
             }
-            showNotification("测试完成", "success");
         } catch (error) {
             console.error("测试失败:", error);
-            testResult.innerHTML = '<div class="prompt-placeholder">测试失败，请重试</div>';
-            showNotification("测试失败: " + error.message, "error");
+            resultEl.innerHTML = '<div class="prompt-placeholder">测试失败，请重试</div>';
+            throw error;
         }
     }
 
@@ -2542,7 +2740,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentVersion.textContent = `v${result.version}`;
 
             // 更新提示词显示
-            promptDisplay.innerHTML = `<pre>${escapeHtml(result.prompt)}</pre>`;
+            promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(result.prompt))}</pre>`;
 
             // 更新测试区域
             updateTestArea(result.variables);
@@ -2778,7 +2976,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentVersion.textContent = `v${saveData.version || 1}`;
 
             // 更新提示词显示
-            promptDisplay.innerHTML = `<pre>${escapeHtml(improvedPromptContent)}</pre>`;
+            promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(improvedPromptContent))}</pre>`;
 
             // 更新测试区域
             updateTestArea(currentVariables);
@@ -3003,13 +3201,49 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // 创建文本框 - 使用 Tailwind 类
             const textarea = document.createElement("textarea");
-            textarea.className = "w-full h-full bg-white border border-[var(--border-subtle)] rounded-xl p-4 text-sm text-[var(--text-secondary)] focus:border-[var(--accent-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]/5 outline-none transition-all resize-none font-mono leading-relaxed shadow-inner";
+            textarea.className = "w-full flex-1 bg-white border border-[color:var(--border-subtle)] rounded-xl p-4 text-sm text-[color:var(--text-secondary)] focus:border-[color:var(--accent-primary)] focus:ring-2 focus:ring-[color:var(--accent-primary-5)] outline-none transition-all resize-none font-mono leading-relaxed shadow-inner";
             textarea.value = currentPrompt;
+
+            // 变量插入工具行：输入变量名后在光标处插入 {$变量}
+            const insertRow = document.createElement("div");
+            insertRow.className = "flex items-center gap-2 px-1 pb-2";
+            const existingVars = extractVariablesFromContent(currentPrompt);
+            insertRow.innerHTML = `
+                <input id="insert-var-input" list="edit-var-suggestions" placeholder="输入变量名，如 KNOWLEDGE"
+                    class="flex-1 max-w-xs bg-white border border-[color:var(--border-subtle)] rounded-lg px-3 py-1.5 text-xs text-[color:var(--text-secondary)] outline-none focus:border-[color:var(--accent-primary)] transition-colors" />
+                <datalist id="edit-var-suggestions">
+                    ${existingVars.map(v => `<option value="${escapeHtml(v)}"></option>`).join('')}
+                </datalist>
+                <button id="insert-var-btn" type="button"
+                    class="text-[11px] font-bold text-[color:var(--accent-primary)] border border-[color:var(--border-subtle)] hover:border-[color:var(--accent-primary)] rounded px-2.5 py-1.5 transition-colors"
+                    title="在光标处插入 {$变量}">
+                    <i class="ri-braces-line"></i> 插入变量
+                </button>
+                ${existingVars.length ? `<span class="text-[10px] text-[color:var(--text-dim)]">已有变量: ${existingVars.map(escapeHtml).join('、')}</span>` : ''}
+            `;
 
             // 替换显示区域
             promptDisplay.innerHTML = '';
-            promptDisplay.appendChild(textarea);
             promptDisplay.classList.remove('p-4'); // Remove padding from container to let textarea fill
+            promptDisplay.appendChild(insertRow);
+            promptDisplay.appendChild(textarea);
+
+            // 插入变量按钮：在光标处插入 {$变量}
+            insertRow.querySelector("#insert-var-btn").addEventListener("click", () => {
+                const input = insertRow.querySelector("#insert-var-input");
+                const name = (input.value || "").trim();
+                if (!name) {
+                    showNotification("请输入变量名", "warning");
+                    return;
+                }
+                const token = "{$" + name + "}";
+                const start = textarea.selectionStart ?? textarea.value.length;
+                const end = textarea.selectionEnd ?? start;
+                textarea.value = textarea.value.slice(0, start) + token + textarea.value.slice(end);
+                textarea.setSelectionRange(start + token.length, start + token.length);
+                textarea.focus();
+                input.value = "";
+            });
 
             // 聚焦文本框并将光标放在末尾
             textarea.focus();
@@ -3017,12 +3251,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // 更改编辑按钮为保存按钮
             editPromptBtn.innerHTML = '<i class="ri-save-line"></i> 保存';
-            editPromptBtn.classList.remove('text-[var(--text-dim)]');
-            editPromptBtn.classList.add('text-[var(--accent-primary)]');
+            editPromptBtn.classList.remove('text-[color:var(--text-dim)]');
+            editPromptBtn.classList.add('text-[color:var(--accent-primary)]');
 
             // 添加取消按钮
             const cancelButton = document.createElement("button");
-            cancelButton.className = "text-[11px] font-bold text-[var(--text-dim)] hover:text-[var(--text-primary)] transition-colors ml-4";
+            cancelButton.className = "text-[11px] font-bold text-[color:var(--text-dim)] hover:text-[color:var(--text-primary)] transition-colors ml-4";
             cancelButton.innerHTML = '<i class="ri-close-line"></i> 取消';
             cancelButton.id = "cancel-edit-btn";
 
@@ -3033,13 +3267,13 @@ document.addEventListener("DOMContentLoaded", function () {
             // 绑定取消按钮事件
             cancelButton.addEventListener("click", () => {
                 // 恢复原始内容
-                promptDisplay.innerHTML = `<pre>${escapeHtml(originalContent)}</pre>`;
+                promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(originalContent))}</pre>`;
                 promptDisplay.classList.add('p-4');
 
                 // 恢复编辑按钮
                 editPromptBtn.innerHTML = '直接编辑';
-                editPromptBtn.classList.add('text-[var(--text-dim)]');
-                editPromptBtn.classList.remove('text-[var(--accent-primary)]');
+                editPromptBtn.classList.add('text-[color:var(--text-dim)]');
+                editPromptBtn.classList.remove('text-[color:var(--accent-primary)]');
 
                 // 移除取消按钮
                 cancelButton.remove();
@@ -3118,13 +3352,13 @@ document.addEventListener("DOMContentLoaded", function () {
             await loadProjectPrompts(currentProjectId);
 
             // 恢复显示模式
-            promptDisplay.innerHTML = `<pre>${escapeHtml(currentPrompt)}</pre>`;
+            promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(currentPrompt))}</pre>`;
             promptDisplay.classList.add('p-4');
 
             // 恢复编辑按钮
             editPromptBtn.innerHTML = '直接编辑';
-            editPromptBtn.classList.add('text-[var(--text-dim)]');
-            editPromptBtn.classList.remove('text-[var(--accent-primary)]');
+            editPromptBtn.classList.add('text-[color:var(--text-dim)]');
+            editPromptBtn.classList.remove('text-[color:var(--accent-primary)]');
 
             // 移除取消按钮
             const cancelButton = document.getElementById("cancel-edit-btn");
@@ -3141,13 +3375,13 @@ document.addEventListener("DOMContentLoaded", function () {
         } catch (error) {
             console.error("保存提示词失败:", error);
             // 恢复显示模式
-            promptDisplay.innerHTML = `<pre>${escapeHtml(currentPrompt)}</pre>`;
+            promptDisplay.innerHTML = `<pre>${highlightVariables(escapeHtml(currentPrompt))}</pre>`;
             promptDisplay.classList.add('p-4');
 
             // 恢复编辑按钮
             editPromptBtn.innerHTML = '直接编辑';
-            editPromptBtn.classList.add('text-[var(--text-dim)]');
-            editPromptBtn.classList.remove('text-[var(--accent-primary)]');
+            editPromptBtn.classList.add('text-[color:var(--text-dim)]');
+            editPromptBtn.classList.remove('text-[color:var(--accent-primary)]');
 
             // 移除取消按钮
             const cancelButton = document.getElementById("cancel-edit-btn");
@@ -3161,6 +3395,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 按 Esc 关闭最上层可见弹窗：触发各弹窗自身的取消按钮，复用其清理逻辑
     const dialogCancelButtons = [
+        ['version-dialog', 'version-dialog-close'],
         ['delete-dialog', 'cancel-delete-btn'],
         ['rename-dialog', 'cancel-rename-btn'],
         ['project-dialog', 'cancel-project-btn'],

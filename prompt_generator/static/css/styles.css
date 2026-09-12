@@ -63,6 +63,23 @@
   --accent-secondary: #2D333A;
   --accent-hover: #C66042;
 
+  /* 透明度派生变量：Tailwind v3 不支持 var()+透明度修饰符，
+     用 color-mix 预先派生（旧浏览器回退为透明，即旧行为） */
+  --accent-primary-10: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+  --accent-primary-20: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+  --accent-primary-30: color-mix(in srgb, var(--accent-primary) 30%, transparent);
+  --accent-primary-5: color-mix(in srgb, var(--accent-primary) 5%, transparent);
+  --bg-main-20: color-mix(in srgb, var(--bg-main) 20%, transparent);
+  --bg-main-30: color-mix(in srgb, var(--bg-main) 30%, transparent);
+  --bg-main-50: color-mix(in srgb, var(--bg-main) 50%, transparent);
+  --bg-main-80: color-mix(in srgb, var(--bg-main) 80%, transparent);
+  --bg-sidebar-30: color-mix(in srgb, var(--bg-sidebar) 30%, transparent);
+  --bg-sidebar-50: color-mix(in srgb, var(--bg-sidebar) 50%, transparent);
+  --bg-surface-50: color-mix(in srgb, var(--bg-surface) 50%, transparent);
+  --text-dim-40: color-mix(in srgb, var(--text-dim) 40%, transparent);
+  --text-dim-50: color-mix(in srgb, var(--text-dim) 50%, transparent);
+  --text-primary-20: color-mix(in srgb, var(--text-primary) 20%, transparent);
+
   /* Performance Transitions */
   --transition-fast: 150ms ease-out;
   --transition-normal: 200ms ease-out;
@@ -196,4 +213,43 @@ h1,
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   box-shadow: var(--shadow-sm);
+}
+/* 提示词展示区的变量高亮 */
+.var-token {
+  color: var(--accent-primary);
+  font-weight: 600;
+  background: var(--accent-primary-5);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* 历史版本面板的逐行 diff */
+.diff-line,
+.diff-add,
+.diff-del {
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 1px 8px;
+  border-radius: 3px;
+}
+
+.diff-sign {
+  display: inline-block;
+  width: 14px;
+  opacity: 0.7;
+  user-select: none;
+}
+
+.diff-add {
+  background: #D1FAE5;
+  color: #047857;
+}
+
+.diff-del {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.diff-same {
+  color: var(--text-secondary);
 }
