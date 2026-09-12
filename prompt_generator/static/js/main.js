@@ -3158,4 +3158,29 @@ document.addEventListener("DOMContentLoaded", function () {
             showNotification("保存提示词失败: " + error.message, "error");
         }
     }
+
+    // 按 Esc 关闭最上层可见弹窗：触发各弹窗自身的取消按钮，复用其清理逻辑
+    const dialogCancelButtons = [
+        ['delete-dialog', 'cancel-delete-btn'],
+        ['rename-dialog', 'cancel-rename-btn'],
+        ['project-dialog', 'cancel-project-btn'],
+        ['improve-dialog', 'cancel-improve'],
+        ['generate-dialog', 'dlg-cancel-generate'],
+    ];
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        for (const [dialogId, cancelButtonId] of dialogCancelButtons) {
+            const dialog = document.getElementById(dialogId);
+            if (dialog && !dialog.classList.contains('hidden')) {
+                const cancelButton = document.getElementById(cancelButtonId);
+                if (cancelButton) {
+                    cancelButton.click();
+                } else {
+                    dialog.classList.add('hidden');
+                    dialog.classList.remove('flex');
+                }
+                break;
+            }
+        }
+    });
 });

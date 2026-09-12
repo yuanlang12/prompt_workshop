@@ -15,23 +15,9 @@
     <meta name="theme-color" content="#ffffff">
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
-    <!-- Vercel Analytics -->
-    <script defer src="/_vercel/insights/script.js"></script>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-dark': '#0f172a',
-                        'brand-medium': '#1e293b',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="/static/vendor/remixicon/remixicon.css">
+    <!-- Tailwind 预编译产物（重新生成: scripts/build_css.sh） -->
+    <link rel="stylesheet" href="/static/css/tailwind.css">
     <style>
         /* Animation Utility Classes */
         .reveal-1 {

@@ -135,10 +135,14 @@ python prompt_generator/run_server.py
 ├── requirements.txt
 ├── start_mac.command         # macOS 一键启动（双击）
 ├── start_windows.bat         # Windows 一键启动（双击）
-├── scripts/setup.py          # 安装与启动引导脚本
+├── scripts/
+│   ├── setup.py              # 安装与启动引导脚本
+│   └── build_css.sh          # 重新生成 Tailwind 静态 CSS（维护者用）
 ├── prompt_generator/
 │   ├── server.py             # FastAPI 主应用与 API 路由
 │   ├── run_server.py         # 本地启动脚本
+│   ├── prompt_utils.py       # 提示词解析纯函数（含单元测试）
+│   ├── tailwind.config.js    # Tailwind 构建配置
 │   ├── auth.py / auth_routes.py / supabase_auth.py   # 认证
 │   ├── supabase_db.py        # 数据访问层（Supabase）
 │   ├── config/

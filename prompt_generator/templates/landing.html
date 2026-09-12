@@ -16,20 +16,8 @@
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/static/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'brand-dark': '#0f172a',
-                        'brand-medium': '#1e293b',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="/static/vendor/remixicon/remixicon.css">
+    <link rel="stylesheet" href="/static/css/tailwind.css">
 </head>
 
 <body class="bg-[var(--bg-main)] text-[var(--text-secondary)] font-sans antialiased overflow-x-hidden">
@@ -40,9 +28,13 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-3 cursor-pointer" onclick="window.location.href='/'">
-                    <h1 class="text-xl font-bold brand-font text-[var(--text-primary)] tracking-tight">提示词工坊</h1>
+                    <span class="text-xl font-bold brand-font text-[var(--text-primary)] tracking-tight">提示词工坊</span>
                 </div>
                 <div class="flex items-center gap-4">
+                    <a href="/auth/login-page"
+                        class="text-sm font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] px-3 py-2 transition-colors">
+                        登录
+                    </a>
                     <a href="/auth"
                         class="bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] text-white text-sm font-bold px-5 py-2 rounded-full transition-all shadow-lg shadow-[var(--accent-primary)]/20 hover:scale-105">
                         立即体验
@@ -95,7 +87,7 @@
     <section id="how-it-works" class="py-24 bg-[var(--bg-sidebar)]/50 border-t border-[var(--border-subtle)]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold brand-font text-[var(--text-primary)] mb-4">为什么比手写 Prompt 更好？</h2>
+                <h2 class="text-3xl font-bold brand-font text-[var(--text-primary)] mb-4">为什么生成的 Prompt 比手写更好？</h2>
                 <p class="text-[var(--text-dim)] max-w-xl mx-auto">手写 Prompt 常见的问题，我们都帮你解决了</p>
             </div>
 
